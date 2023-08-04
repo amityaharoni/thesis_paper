@@ -15,5 +15,5 @@
 *.pdf
 *.sbl
 *.synctex.gz
-*.tex
 *.toc
+*.bib
