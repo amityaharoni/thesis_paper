@@ -106,9 +106,9 @@
    
    \include{Lists}
    % Run the following three lines in the command line to get the lists
-%makeindex -s Thesis.ist -t Thesis.alg -o Thesis.acr Thesis.acn
-%makeindex -s Thesis.ist -t Thesis.slg -o Thesis.syi Thesis.sbl
-%makeindex -s Thesis.ist -t Thesis.glg -o Thesis.gls Thesis.glo
+%makeindex -s main.ist -t main.alg -o main.acr main.acn
+%makeindex -s main.ist -t main.slg -o main.syi main.sbl
+%makeindex -s main.ist -t main.glg -o main.gls main.glo
 
 % ### End of addition
 
@@ -175,9 +175,9 @@ All rights reserved\\
 %
 \chaptertitlefont{\fontsize{14}{15}\selectfont\centering}  
 
-\include{Abstract}  % include your abstract file
+\include{abstract/main}  % include your abstract file
 
-\include{Acknowledgment}  % include your Acknowledgement file
+\include{acknowledgment/main}  % include your Acknowledgement file
 
 
 \begin{onehalfspacing}%To make the table of contents, figures, and tables single spaced, as required by the formatting guidelines, pg. 24.
@@ -206,7 +206,7 @@ All rights reserved\\
 \addcontentsline{toc}{chapter}{\listtablename}  % <---- and change here too.
 \renewcommand*\listtablename{LIST OF TABLES}
 \listoftables
-```
+
 
 
 \end{onehalfspacing}
@@ -220,12 +220,8 @@ All rights reserved\\
 % Remove the centering of chapter name.
 \chaptertitlefont{\fontsize{14}{15}\selectfont}  % <------ Add this line
 
-\include{Chapter_1}
-\include{Chapter_2}
-\include{Chapter_3}
-\include{Chapter_4}
-\include{Chapter_5}
-\include{Conclusion}
+\include{chapters/main}  % include your chapters
+\include{conclusion/main}  % include your conclusion file
 
 
 % $$$$$$$$$$$$$$$$$  Reference style  Starts $$$$$$$$$$$$$$
@@ -236,7 +232,7 @@ All rights reserved\\
 	\addcontentsline{toc}{chapter}{References}
 	\newcommand{\BIBdecl}{\setlength{\itemsep}{0pt}}%To control space between bibliography entries
 		\bibliographystyle{IEEEtran}
-		\bibliography{References}
+		\bibliography{references/references}
 \end{onehalfspacing}
 
 % $$$$$$$$$$$$$$$$$  Reference style Ends  $$$$$$$$$$$$$$
@@ -256,9 +252,8 @@ All rights reserved\\
             \phantomsection
 			\addcontentsline{toc}{chapter}{Appendices} 
 			\end{center}
-            \include{Appendix_A}
-            \include{Appendix_B}
-            \include{Papers}
+            \include{appendices/main}
+            \include{papers/main}
 		\endgroup
 % $$$$$$$$$$$$$$$$$  Appendix ends  $$$$$$$$$$$$$$
 
