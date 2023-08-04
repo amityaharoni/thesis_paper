@@ -1,0 +1,19 @@
+# gitignore of latex project
+#
+*.aux
+*.log
+*.out
+*.acn
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.glo
+*.ist
+*.lof
+*.lot
+*.pdf
+*.sbl
+*.synctex.gz
+*.tex
+*.toc
