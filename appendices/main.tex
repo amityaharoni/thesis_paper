@@ -1,2 +1,19 @@
-\input{appendices/a/main.tex}
-\input{appendices/b/main.tex}
+% $$$$$$$$$$$$$$$$$  include Appendices   $$$$$$$$$$$$$$
+
+\appendix
+		\newpage
+		\begingroup
+			\let\clearpage\relax
+			\begin{center}
+			\vspace*{2\baselineskip}
+			{ \textbf{{\large APPENDICES}}} 
+            % Fixes the numbering of "new" section created with "\addcontentsline."
+            % You need to add the "\phantomsection" before *every* "\addcontentsline."
+            \phantomsection
+			\addcontentsline{toc}{chapter}{Appendices} 
+			\end{center}
+            \input{appendices/neurosymbolic_ai/main.tex}
+            \input{appendices/description_logic/main.tex}
+            \input{papers/main.tex}
+    \endgroup
+% $$$$$$$$$$$$$$$$$  Appendix ends  $$$$$$$$$$$$$$

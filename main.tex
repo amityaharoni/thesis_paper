@@ -220,42 +220,20 @@ All rights reserved\\
 % Remove the centering of chapter name.
 \chaptertitlefont{\fontsize{14}{15}\selectfont}  % <------ Add this line
 
+\include{preliminaries/main}  % include your preliminaries file
 \include{chapters/main}  % include your chapters
 \include{conclusion/main}  % include your conclusion file
 
 
 % $$$$$$$$$$$$$$$$$  Reference style  Starts $$$$$$$$$$$$$$
 
-\begin{onehalfspacing}
-	\renewcommand*\bibname{\centerline{REFERENCES}} 
-    \phantomsection
-	\addcontentsline{toc}{chapter}{References}
-	\newcommand{\BIBdecl}{\setlength{\itemsep}{0pt}}%To control space between bibliography entries
-		\bibliographystyle{IEEEtran}
-		\bibliography{references/references}
-\end{onehalfspacing}
+\include{references/references}
 
 % $$$$$$$$$$$$$$$$$  Reference style Ends  $$$$$$$$$$$$$$
 
 
-% $$$$$$$$$$$$$$$$$  include Appendices   $$$$$$$$$$$$$$
+\include{appendices/main}
 
-\appendix
-		\newpage
-		\begingroup
-			\let\clearpage\relax
-			\begin{center}
-			\vspace*{2\baselineskip}
-			{ \textbf{{\large APPENDICES}}} 
-            % Fixes the numbering of "new" section created with "\addcontentsline."
-            % You need to add the "\phantomsection" before *every* "\addcontentsline."
-            \phantomsection
-			\addcontentsline{toc}{chapter}{Appendices} 
-			\end{center}
-            \include{appendices/main}
-            \include{papers/main}
-		\endgroup
-% $$$$$$$$$$$$$$$$$  Appendix ends  $$$$$$$$$$$$$$
 
 \end{document}
 
