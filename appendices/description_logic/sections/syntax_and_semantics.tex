@@ -1,0 +1,134 @@
+\section{$\mathcal{ALC}$ Syntax and Semantics}
+\label{appendixB:section:dl_syntax_semantics}
+
+Following the introduction, we formalize the above ideas in a more precise manner.
+We begin by introducing the syntax and semantics of one of the most expressive DLs, namely the Attributive Concept Language with Complements DL ($\mathcal{ALC}$).
+
+\subsection{Syntax}
+\label{dl_syntax_semantics:subsection:dl_syntax}
+
+In logic, the syntax of a language is the set of well-formed formulas of the language.
+The syntax of a DL is defined by a signature and a grammar.
+The signature defines the set of primitive names of the DL (e.g., concept names, role names, and individual names). 
+The grammar defines how to combine the primitive names to form complex names (e.g., concepts and roles).
+The set of complex names is called the set of concepts and roles of the DL.
+
+This section would rely on the construction found in \cite{DLhandbook}.
+
+\begin{definition}[Signature]
+    Given a description logic (DL), a
+     \emph{signature} $\Sigma$ is a triple $\Sigma = (N_\dlconcepts, \dlroles, \dlindividuals)$,
+    where $N_\dlconcepts$, $\dlroles$, and $\dlindividuals$ are pairwise disjoint sets of \emph{concept names}, \emph{roles}, and \emph{individuals}, respectively.
+\end{definition}
+
+A description logic is defined by the set of constructors it supports.
+The constructors of $\mathcal{ALC}$ are $\exists$, $\forall$, $\sqcap$, $\sqcup$, $\neg$, $\top$, and $\bot$.
+
+\begin{definition}[$\mathcal{ACL}$ Concept]
+    Given a signature $\Sigma$, 
+    a \emph{$\mathcal{ALC}$-concept} $C$ is defined recursively by the following grammar:
+    \begin{align*}
+        C &::= A \mid \top \mid \bot \mid D \sqcap E \mid D \sqcup E \mid \neg D \mid \exists R.D \mid \forall R.D
+    \end{align*}
+    where $A \in N_\dlconcepts$, $R \in \dlroles$ and $D, E$ are previously defined $\mathcal{ALC}$-concepts.
+    The set of $\mathcal{ALC}$-concepts over a signature $\Sigma$ is denoted by $\dlconcepts$ and is defined as the smallest 
+    set that contains $N_\dlconcepts \subseteq \dlconcepts$ and every concept $C$ that can be recursively constructed 
+    from the primitive concepts in $N_\dlconcepts$ using the above grammar.
+\end{definition}
+
+Some DL languages also allow the use of \emph{nominals} in concepts.
+A nominal is a concept that is interpreted as a singleton set of individuals.
+We say that a DL supports nominals if it supports the constructor $\{a\}$, where $a \in \dlindividuals$.
+That is, if every concept is recursively constructed from a set of constructors which also includes $\{a\}$.
+
+\subsection{Semantics}
+\label{dl_syntax_semantics:subsection:dl_semantics}
+
+In logic, the semantics of a language is the set of interpretations of the language.
+An interpretation is a mapping from the primitive names of the language to elements of a domain.
+The semantics of a DL is defined by a fixed domain and an interpretation.
+The fixed domain is the set of elements that can be used to interpret the primitive names of the DL.
+The interpretation is a mapping from the primitive names of the DL to elements of the fixed domain.
+The interpretation of a complex name is defined in terms of the interpretation of its subnames.
+The standard semantics of $\mathcal{ALC}$ treats concepts as subsets of the fixed domain and roles as binary relations over the fixed domain.
+
+\begin{definition}[Interpretation]
+    Given a signature $\Sigma$, an \emph{interpretation} $\mathcal{I}$ is a triple $\mathcal{I} = (\Delta^\mathcal{I}, \cdot^\mathcal{I}, \cdot^\mathcal{I})$,
+    where $\Delta^\mathcal{I}$ is a non-empty set called the \emph{domain} of $\mathcal{I}$,
+    $\cdot^\mathcal{I}:\dlconcepts\to\mathcal{P}\Delta^\mathcal{I}$ is 
+    an \emph{interpretation function} that maps each concept $C \in \dlconcepts$ to a subset 
+    $C^\mathcal{I} \subseteq \Delta^\mathcal{I}$,
+    and $\cdot^\mathcal{I}:\dlroles\to\mathcal{P}(\Delta^\mathcal{I}\times\Delta^\mathcal{I})$ is
+    an \emph{interpretation function} that maps each role name $R \in N_\dlroles$ to a binary relation $R^\mathcal{I} \subseteq \Delta^\mathcal{I} \times \Delta^\mathcal{I}$.
+
+    The interpretation function $\cdot^\mathcal{I}$ must satisfies the following conditions:
+    \begin{itemize}
+        \item $\top^\mathcal{I} = \Delta^\mathcal{I}$ and $\bot^\mathcal{I} = \emptyset$.
+        \item For every $a \in \dlindividuals$, $a^\mathcal{I} \in \Delta^\mathcal{I}$.
+        \item $(C \sqcap D)^\mathcal{I} = C^\mathcal{I} \cap D^\mathcal{I}$ and $(C \sqcup D)^\mathcal{I} = C^\mathcal{I} \cup D^\mathcal{I}$.
+        \item $(\neg C)^\mathcal{I} = \Delta^\mathcal{I} \setminus C^\mathcal{I}$.
+        \item $(\exists R.C)^\mathcal{I} = \{x \in \Delta^\mathcal{I} \mid \exists y \in \Delta^\mathcal{I}.(x, y) \in R^\mathcal{I} \land y \in C^\mathcal{I}\}$.
+        \item $(\forall R.C)^\mathcal{I} = \{x \in \Delta^\mathcal{I} \mid \forall y \in \Delta^\mathcal{I}.(x, y) \in R^\mathcal{I} \implies y \in C^\mathcal{I}\}$.
+    \end{itemize}
+\end{definition}
+
+If a DL supports nominals, then the interpretation function $\cdot^\mathcal{I}$ must also satisfy the following condition:
+\begin{itemize}
+    \item $(\{a\})^\mathcal{I} = \{a^\mathcal{I}\}$.
+\end{itemize}
+
+\subsection{Knowledge Base}
+\label{dl_syntax_semantics:subsection:dl_kb}
+
+Description logics are used to represent knowledge about a domain of interest (e.g., a medical domain).
+The knowledge about a domain of interest is represented by a knowledge base.
+A knowledge base is a set of axioms.
+An axiom is a statement that describes a relation between concepts, roles, and individuals.
+The semantics of a knowledge base is defined in terms of the semantics of its axioms.
+
+\begin{definition}[TBox and Subsumption]
+    Given a signature $\Sigma$, a \emph{TBox} $\mathcal{T}$ is a finite set of \emph{subsumption axioms} of the form $C \sqsubseteq D$,
+    where $C, D \in \dlconcepts$.
+\end{definition}
+
+\begin{notation}[Definition]
+    Given a signature $\Sigma$, a \emph{definition}, denoted as $C \equiv D$, is an abbreviation
+    for the subsumption axioms $C \sqsubseteq D$ and $D \sqsubseteq C$.
+\end{notation} 
+
+\begin{definition}[ABox and Assertion]
+    Given a signature $\Sigma$, an \emph{ABox} $\mathcal{A}$ is a finite set of \emph{assertion axioms} of the form $C(a)$ or $R(a, b)$,
+    where $C \in \dlconcepts$, $R \in \dlroles$, and $a, b \in \dlindividuals$.
+\end{definition}
+
+\begin{definition}[Satisfiability]
+    Given an interpretation $\mathcal{I}$, we say that
+    \begin{itemize}
+        \item $\mathcal{I}$ \emph{satisfies} a concept $C \in \dlconcepts$ if $C^\mathcal{I} \neq \emptyset$.
+        \item $\mathcal{I}$ \emph{satisfies} a role $R \in \dlroles$ if $R^\mathcal{I} \neq \emptyset$.
+        \item $\mathcal{I}$ \emph{satisfies} a subsumption axiom $C \sqsubseteq D$ if $C^\mathcal{I} \subseteq D^\mathcal{I}$.
+        \item $\mathcal{I}$ \emph{satisfies} an assertion axiom $C(a)$ if $a^\mathcal{I} \in C^\mathcal{I}$.
+        \item $\mathcal{I}$ \emph{satisfies} an assertion axiom $R(a, b)$ if $(a^\mathcal{I}, b^\mathcal{I}) \in R^\mathcal{I}$.
+        \item $\mathcal{I}$ \emph{satisfies} a TBox $\mathcal{T}$ if $\mathcal{I}$ satisfies every subsumption axiom in $\mathcal{T}$.
+        \item $\mathcal{I}$ \emph{satisfies} an ABox $\mathcal{A}$ if $\mathcal{I}$ satisfies every assertion axiom in $\mathcal{A}$.
+    \end{itemize}
+\end{definition}
+
+\begin{definition}[Knowledge Base]
+    Given a signature $\Sigma$, a \emph{knowledge base} $\mathcal{K}$ is a pair $\mathcal{K} = (\mathcal{T}, \mathcal{A})$,
+    where $\mathcal{T}$ is a TBox and $\mathcal{A}$ is an ABox.
+\end{definition}
+
+\begin{definition}[Model]
+    Given a knowledge base $\mathcal{K} = (\mathcal{T}, \mathcal{A})$ and an interpretation $\mathcal{I}$,
+    we say that $\mathcal{I}$ is a \emph{model} of $\mathcal{K}$ if $\mathcal{I}$ satisfies $\mathcal{T}$ and $\mathcal{A}$.
+
+    We say that a knowledge base $\mathcal{K}$ is
+consistent if it has a model.
+\end{definition}
+
+\begin{notation}[Satisfiability]
+    We will write $\mathcal{I}\vDash\mathcal{L}$ if $\mathcal{I}$ satisfies $\mathcal{L}$.
+\end{notation}
+
+Under this semantics, a query $q$ is entailed by a knowledge base $\mathcal{K}$ if $q$ is true in all models of $\mathcal{K}$.
