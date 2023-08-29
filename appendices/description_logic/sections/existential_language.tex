@@ -1,0 +1,41 @@
+\section{$\mathcal{EL}++$ Syntax and Semantics}
+\label{sec:existential_language}
+For most applications, $\mathcal{ALC}$ 
+is too computationally expensive to be used in practice. 
+For example, the subsumption problem in 
+$\mathcal{ALC}$ is 
+$\pspace$-complete 
+\cite{ALCcomplexity}.
+To address this issue,
+a number of tractable DLs have been proposed.
+
+One of the most popular tractable DLs is the
+$\mathcal{EL}$ family of DLs.
+The $\mathcal{EL}$ family of DLs is a subset of the $\mathcal{ALC}$ family of DLs
+that contains only the constructors $\exists$, $\sqcap$, $\neg$ and $\top$.
+
+\begin{definition}[EL Concept]
+    Given a signature $\Sigma$, an \emph{$\mathcal{EL}$-concept} $C$ is defined recursively by the following grammar:
+    \begin{align*}
+        C &::= A \mid \bot \mid D \sqcap E \mid \neg D \mid \exists R.D
+    \end{align*}
+    where $A \in N_\dlconcepts$, $R \in \dlroles$ and $D, E$ are previously defined $\mathcal{EL}$-concepts.
+    The set of $\mathcal{EL}$-concepts over a signature $\Sigma$ is denoted by $\dlconcepts$ and is defined as the smallest 
+    set that contains $N_\dlconcepts \subseteq \dlconcepts$ and every concept $C$ that can be recursively constructed 
+    from the primitive concepts in $N_\dlconcepts$ using the above grammar.
+\end{definition}
+Interpretation of $\mathcal{EL}$-concepts is similar to the interpretation of $\mathcal{ALC}$-concepts.
+The main advantage of $\mathcal{EL}$ is that subsumption in $\mathcal{EL}$ is polynomial time \cite{ELcomplexity}.
+In \cite{EL++complexity} it was shown that adding the constructor $\bot$ and nominality does not increase the complexity of subsumption.
+The resulting DL is called $\mathcal{EL}^{++}$.
+
+\begin{definition}[$\mathcal{EL}^{++}$ Concept]
+    Given a signature $\Sigma$, an \emph{$\mathcal{EL}^{++}$-concept} $C$ is defined recursively by the following grammar:
+    \begin{align*}
+        C &::= A \mid \top \mid \bot \mid D \sqcap E \mid \neg D \mid \exists R.D \mid \{a\}
+    \end{align*}
+    where $A \in N_\dlconcepts$, $R \in \dlroles$ and $D, E$ are previously defined $\mathcal{EL}^{++}$-concepts.
+    The set of $\mathcal{EL}^{++}$-concepts over a signature $\Sigma$ is denoted by $\dlconcepts$ and is defined as the smallest 
+    set that contains $N_\dlconcepts \subseteq \dlconcepts$ and every concept $C$ that can be recursively constructed 
+    from the primitive concepts in $N_\dlconcepts$ using the above grammar.
+\end{definition}

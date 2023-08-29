@@ -2,7 +2,47 @@
 % Appendix B File
 
 \refstepcounter{chapter}%
-\chapter*{\thechapter \quad Appendix B Title}
+\chapter*{\thechapter \quad Description Logics}
 \label{appendixB}
 
-Your content goes here.
+Description logics (DLs) are a family of languages 
+that can be used to represent the knowledge of 
+an application domain with a logic-based formalism.
+
+The signature of a DL is a set of concept names, role names, and individual names.
+A concept is a set of individuals, and a role is a binary relation between individuals.
+For instance, the signature of a DL can be $\Sigma = \{\{\mathsf{Bob}, \mathsf{Alice}\}, \{\mathsf{likes}\}, \{\mathsf{Person}\}\}$.
+The concept $\mathsf{Person}$ is a set of individuals, and the role $\mathsf{likes}$ is a binary relation between individuals.
+The individuals $\mathsf{Bob}$ and $\mathsf{Alice}$ are elements of the concept $\mathsf{Person}$.
+The individual $\mathsf{Bob}$ is related to the individual $\mathsf{Alice}$ by the role $\mathsf{likes}$.
+
+Concepts and roles can be combined to form more complex concepts and roles.
+The constructors $\exists$, $\forall$, $\sqcap$, $\sqcup$, $\neg$, $\top$, and $\bot$ can be used to form complex concepts.
+The operator $\exists$ is the existential quantifier, and the operator $\forall$ is the universal quantifier.
+The operator $\sqcap$ is the intersection operator, and the operator $\sqcup$ is the union operator.
+The operator $\neg$ is the negation operator, and the operator $\top$ is the top concept.
+The operator $\bot$ is the bottom concept.
+The top concept is the set of all individuals, and the bottom concept is the empty set.
+For instance, the concept $\mathsf{Person} \sqcap \exists \mathsf{likes}.\mathsf{Person}$ is the set of individuals that are persons and
+are also related to a person by the role $\mathsf{likes}$.
+Each DL system supports a subset of the constructors.
+
+Concepts can be used to form statements.
+Given concepts $C$ and $D$, role $R$, and individual $a$,
+a statement is either a concept assertion $C(a)$, a role assertion $R(a, b)$, or a subsumption $C \sqsubseteq D$.
+A concept assertion $C(a)$ states that the individual $a$ is an element of the concept $C$.
+A role assertion $R(a, b)$ states that the individual $a$ is related to the individual $b$ by the role $R$.
+A subsumption $C \sqsubseteq D$ states that the concept $C$ is a subset of the concept $D$.
+Of specific interest are axioms.
+Axioms are statements that are always true.
+A knowledge base is a set of axioms.
+
+A knowledge base can be used to answer queries.
+Given a knowledge base $\mathcal{K}$ and a query $q$,
+the query $q$ is entailed by the knowledge base $\mathcal{K}$ if $q$ is true in all models of $\mathcal{K}$.
+Most DLs are designed such that subsumption queries are decidable in polynomial time.
+
+In the following, we formalize the above ideas in a more precise manner
+and introduce the DLs used in this thesis.
+
+\input{appendices/description_logic/sections/main.tex}

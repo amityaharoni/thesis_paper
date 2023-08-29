@@ -1,4 +1,4 @@
-
+% Example bib item
 @inproceedings{key1,
 title     = "Title of the conference paper",
 author    = "John Author",
@@ -8,46 +8,60 @@ month     = "Mon.",
 year      = "Year"
 }
 
-@article{key2,
-title   = "Title of the Journal paper",
-author  = "Andrew Wiles and Ingrid Daubechies",
-journal = "Name of the Journal",
-volume  = "vol.",
-number  = "iss.",
-pages   = "page",
-month   = "Mon.",
-year    = "Year"
+% #############################
+% Description Logic references
+% #############################
+@book{DLhandbook,
+author = {van Harmelen, Frank and van Harmelen, Frank and Lifschitz, Vladimir and Porter, Bruce},
+title = {Handbook of Knowledge Representation},
+year = {2007},
+isbn = {0444522115},
+publisher = {Elsevier Science},
+address = {San Diego, CA, USA},
+abstract = {Knowledge Representation, which lies at the core of Artificial Intelligence, is concerned with encoding knowledge on computers to enable systems to reason automatically. The Handbook of Knowledge Representation is an up-to-date review of twenty-five key topics in knowledge representation, written by the leaders of each field.This book is an essential resource for students, researchers and practitioners in all areas of Artificial Intelligence. * Make your computer smarter* Handle qualitative and uncertain information* Improve computational tractability to solve your problems easily}
 }
 
-@book{key3,
-title     = "Book Title",
-author    = "John Smith and Pierre Fermat and Clark Maxwell",
-edition   = "3rd",
-publisher = "Publisher Name",
-year      = "Year",
-address   = "Location"
+% Introduces the description logic ALC and shows its complexity
+@article{ALCcomplexity,
+title = {Attributive concept descriptions with complements},
+journal = {Artificial Intelligence},
+volume = {48},
+number = {1},
+pages = {1-26},
+year = {1991},
+issn = {0004-3702},
+doi = {https://doi.org/10.1016/0004-3702(91)90078-X},
+url = {https://www.sciencedirect.com/science/article/pii/000437029190078X},
+author = {Manfred Schmidt-Schauß and Gert Smolka},
+abstract = {We investigate the consequences of adding unions and complements to attributive concept descriptions employed in terminological knowledge representation languages. It is shown that deciding coherence and subsumption of such descriptions are PSPACE-complete problems that can be decided with linear space.}
 }
 
-@misc{key4,
-title        = "Title of the reference",
-howpublished = "Publishing details"
+% Introduces the description logic EL and shows its complexity
+@inproceedings{ELcomplexity,
+author = {Baader, Franz},
+title = {Terminological Cycles in a Description Logic with Existential Restrictions},
+year = {2003},
+publisher = {Morgan Kaufmann Publishers Inc.},
+address = {San Francisco, CA, USA},
+abstract = {Cyclic definitions in description logics have until now been investigated only for description logics allowing for value restrictions. Even for the most basic language FL0, which allows for conjunction and value restrictions only, deciding subsumption in the presence of terminological cycles is a PSPACE-complete problem. This paper investigates subsumption in the presence of terminological cycles for the language EL, Which allows for conjunction, existential restrictions, and the topconcept. In contrast to the results for FL0., subsumption in EL remains polynomial, independent of whether we use least fixpoint semantics, greatest fixpoint semantics, or descriptive semantics.},
+booktitle = {Proceedings of the 18th International Joint Conference on Artificial Intelligence},
+pages = {325–330},
+numpages = {6},
+location = {Acapulco, Mexico},
+series = {IJCAI'03}
 }
 
-@phdthesis{key5,
-title  = "Thesis/Dissertation Title",
-author = "Author Name",
-school = "School Name",
-year   = "Year"
+% Introduces the description logic EL++ and shows its complexity
+@inproceedings{EL++complexity,
+author = {Baader, Franz and Brandt, Sebastian and Lutz, Carsten},
+title = {Pushing the EL Envelope},
+year = {2005},
+publisher = {Morgan Kaufmann Publishers Inc.},
+address = {San Francisco, CA, USA},
+abstract = {Recently, it has been shown that the small description logic (DL) EL, which allows for conjunction and existential restrictions, has better algorithmic properties than its counterpart FL0, which allows for conjunction and value restrictions. Whereas the subsumption problem in FL0 becomes already intractable in the presence of acyclic TBoxes, it remains tractable in EL even with general concept inclusion axioms (GCIs). On the one hand, we extend the positive result for EL by identifying a set of expressive means that can be added to EL without sacrificing tractability. On the other hand, we show that basically all other additions of typical DL constructors to EL with GCIs make subsumption intractable, and in most cases even EXPTIME-complete. In addition, we show that subsumption in FL0 with GCIs is EXPTIME-complete.},
+booktitle = {Proceedings of the 19th International Joint Conference on Artificial Intelligence},
+pages = {364–369},
+numpages = {6},
+location = {Edinburgh, Scotland},
+series = {IJCAI'05}
 }
-
-
-
-@book{guidelines,
-title     = "Thesis and Dissertation Guidelines",
-author    = "KAUST",
-edition   = "1",
-publisher = "KAUST",
-year      = "2011",
-address   = "Thuwal, Makkah Province, Saudi Arabia"
-}
-

@@ -3,42 +3,7 @@
 \documentclass[onecolumn, 12 pt, doublespace, fullpage, a4paper]{report}
 \renewcommand{\baselinestretch}{1.75} % baseline stretch
 
-% Packages
-\usepackage{amssymb}
-\usepackage{amsthm}
-\usepackage[cmex10]{amsmath}
-\usepackage{adjustbox} 
-\usepackage{arabtex} 
-\usepackage{academicons}
-\usepackage{breakcites} 
-\usepackage{color}
-\usepackage{epsfig}
-\usepackage{epstopdf}
-\usepackage{etoolbox}
-\usepackage{enumitem}
-\usepackage{float}
-\usepackage{fancyhdr}
-\usepackage{graphicx}
-\usepackage{graphics}
-%\usepackage{hyperref} % if you want to highlight the links
-\usepackage[hidelinks]{hyperref}
-\usepackage{latexsym,amsfonts}
-\usepackage{longtable}
-\usepackage{listings}
-\usepackage{lscape} 
-\usepackage{lipsum}
-\usepackage{multirow}             
-\usepackage{pdfpages}
-\usepackage[figuresright]{rotating} 
-\usepackage{sectsty}
-\usepackage{setspace}
-\usepackage{subfigure}
-\usepackage{textcomp}
-\usepackage{utf8} 
-\usepackage{url} 
-\usepackage{wrapfig} 
-\usepackage{wasysym} 
-\usepackage{xcolor}
+\include{packages.tex}
 
 
 % you can define your most used synonyms/acronyms
@@ -125,6 +90,8 @@
 %\newcommand{\orcid}[1]{\href{https://orcid.org/#1}{\textcolor[HTML]{A6CE39}{\aiOrcid}}}
 \newcommand{\orcid}{\includegraphics[width=8pt]{ORCID}} % ORCID ID
 
+\include{envs.tex}
+\include{commands/main.tex}
 
 \begin{document}
 
@@ -227,13 +194,12 @@ All rights reserved\\
 
 % $$$$$$$$$$$$$$$$$  Reference style  Starts $$$$$$$$$$$$$$
 
-\include{references/references}
+\include{references/main.tex}
 
 % $$$$$$$$$$$$$$$$$  Reference style Ends  $$$$$$$$$$$$$$
 
 
 \include{appendices/main}
-
 
 \end{document}
 
