@@ -3,7 +3,23 @@
 
 \refstepcounter{chapter}%
 \chapter*{\thechapter \quad Neuro-symbolic AI}
-\label{appendixA}
+\label{appendixB}
 
-The main application of knowledge bases is to infer new knowledge from existing knowledge
-in low computational complexity.
+Description logics are primarly used in the field of artifical intelligence in the context of knowledge base embeddings.
+Knowledge base embeddings are methods of representing a knowledge base in some euclidean space $\mathbb{R}^n$
+in such a way that some structural properties of the knowledge base are preserved. The embeddings are then used
+for different knowledge representation and Natural Language Processing tasks \cite{SurveryKG}:
+
+% \begin{itemize}
+%     \item \textbf{Knowledge Base Completion:} Applying the embeddings to a knowledge base allows for the
+%     prediction of missing facts in the knowledge base.
+%     As the representation space is a euclidean space, the prediction of missing facts can be done using
+%     a scoring function that measures the similarity between two entities in the knowledge base.
+%     This allows for the prediction of facts that are implicit in the knowledge base as well as 
+%     the prediction of facts that are not present in the knowledge base but are likely to be true.
+%     \item \textbf{Entity and Relation Extraction:} Applying the embeddings to a knowledge base allows for
+%     the usage of the knowledge base as features in Natural Language Processing (NLP) tasks.
+%     This allows for the prediction of entities and relations in text.
+% \end{itemize}
+
+A knowledge base embedding is usually constructed through a learning AI algorithm.
