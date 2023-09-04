@@ -6,24 +6,45 @@
 \label{appendixB}
 
 Description logics are primarly used in the field of artifical intelligence in the context of knowledge base embeddings.
-Knowledge base embeddings are methods of representing a knowledge base in some euclidean space $\mathbb{R}^n$
-in such a way that some structural properties of the knowledge base are preserved. The embeddings are then used
-for different knowledge representation and Natural Language Processing tasks \cite{SurveryKG}.
+Knowledge base embeddings are methods of representing a knowledge base in some euclidean space $\mathbb{R}^n$.
 Given a knowledge base $\mathcal{K}$, a knowledge base embedding is a function
 \[
     \mathcal{E} : \dlconcepts \rightarrow \mathbb{R}^n
 \]
+that maps the concepts in the knowledge base to some point in $\mathbb{R}^n$ 
+in such a way that some structural properties of the knowledge base are preserved. The embeddings are then used
+for different knowledge representation and Natural Language Processing tasks \cite{SurveryKG}.
+Some of these tasks include
+\begin{itemize}
+    \item \textbf{Knowledge Base Completion:} Applying the embeddings to a knowledge base allows us to
+    exploit the fact that eucalidean spaces have a notion of distance between points.
+    This allows for a notion of similarity between entities in the knowledge base
+    which can be used to predict new facts.
+    \par In large knowledge bases, it is often the case that solving queries is computationally expensive.
+    The embeddings can be used to speed up the process of solving queries by using the embeddings to
+    predict the answer to the query.
+    \par Furthermore, the embeddings can be used to predict new facts that cannot be inferred from the knowledge base
+    but are likely to be true.
+    For instance, given the fact that "Steve Jobs was the CEO of Apple", we can predict that "Steve Jobs was the founder of Apple"
+    since the two facts are similar.
+    \item \textbf{Entity linking and Relation Extraction:} Applying the embeddings to a knowledge base allows for
+    the usage of the knowledge base as features in Natural Language Processing (NLP) tasks.
+    Two of the most common NLP tasks for KB embeddings are entity linking and relation extraction.
+    \par Entity linking is the task of identifying the entities mentioned in a text and linking them to their corresponding
+    entities in the knowledge base.
+    For instance, given the term "Apple", entity linking is the task of identifying whether the term refers to the company or the fruit.
+    This is done by computing the similarity between the term and the embeddings of the entities in the knowledge base,
+    which is a task that can be done efficiently in euclidean spaces.
+    \par Relation extraction is the task of identifying the relations between entities in a text.
+    For instance, given the text "Steve Jobs was the CEO of Apple", relation extraction is the task of identifying that
+    the relation between the entities "Steve Jobs" and "Apple" is "CEO".
+    This task can be done using KBs by linking the names in the text to their corresponding entities in the KB (e.g. "Steve Jobs" to the entity "Person"
+    and "Apple" to the entity "Company"), a task often referred to as name-entity recognition, and then using the KB to identify the relation between the entities.
+    As shown below, AI tasks require a loss function that measures the similarity between 
+    the predicted output of the AI algorithm and the ground truth.
+    The embeddings can be used to numerically represent and measure the similarity between the predicted output and the ground truth.    
+\end{itemize}
 
-
-% \begin{itemize}
-%     \item \textbf{Knowledge Base Completion:} Applying the embeddings to a knowledge base allows for the
-%     prediction of missing facts in the knowledge base.
-%     As the representation space is a euclidean space, the prediction of missing facts can be done using
-%     a scoring function that measures the similarity between two entities in the knowledge base.
-%     This allows for the prediction of facts that are implicit in the knowledge base as well as 
-%     the prediction of facts that are not present in the knowledge base but are likely to be true.
-%     \item \textbf{Entity and Relation Extraction:} Applying the embeddings to a knowledge base allows for
-%     the usage of the knowledge base as features in Natural Language Processing (NLP) tasks.
-%     This allows for the prediction of entities and relations in text.
-% \end{itemize}
-
+There are two main approaches for inducing a knowledge base embedding.
+The first approach is to use an algebraic method to compute for each concept $C$ in the knowledge base
+a vector $\mathcal{E}(C)$ in $\mathbb{R}^n$ that represents the concept.
