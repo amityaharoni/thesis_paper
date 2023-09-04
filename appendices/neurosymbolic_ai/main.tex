@@ -8,7 +8,12 @@
 Description logics are primarly used in the field of artifical intelligence in the context of knowledge base embeddings.
 Knowledge base embeddings are methods of representing a knowledge base in some euclidean space $\mathbb{R}^n$
 in such a way that some structural properties of the knowledge base are preserved. The embeddings are then used
-for different knowledge representation and Natural Language Processing tasks \cite{SurveryKG}:
+for different knowledge representation and Natural Language Processing tasks \cite{SurveryKG}.
+Given a knowledge base $\mathcal{K}$, a knowledge base embedding is a function
+\[
+    \mathcal{E} : \dlconcepts \rightarrow \mathbb{R}^n
+\]
+
 
 % \begin{itemize}
 %     \item \textbf{Knowledge Base Completion:} Applying the embeddings to a knowledge base allows for the
@@ -22,4 +27,3 @@ for different knowledge representation and Natural Language Processing tasks \ci
 %     This allows for the prediction of entities and relations in text.
 % \end{itemize}
 
-A knowledge base embedding is usually constructed through a learning AI algorithm.
