@@ -1,0 +1,43 @@
+\section{The Goal of Supervised Learning}
+To describe the training algorithm of NNs, it is important to first describe the task 
+that NNs are trying to solve.
+Suppose that there is some ground truth $\mathcal{G}:\dlconcepts\times\dlconcepts\to[0,1]$.
+This ground truth represents the relationship between the concepts in the knowledge base.
+If $\mathcal{K}\vdash C\subseteq D$ then $\mathcal{G}(C,D)=1$ and if $\mathcal{K}\vdash C\not\subseteq D$ then $\mathcal{G}(C,D)=0$.
+As mentioned in \ref{item:kb_completion}, one goal of NNs is
+to diagnose possible relations between concepts that could not be directly inferred (or potentially require a lot of computation to infer) from the knowledge base.
+Hence the ground truth $\mathcal{G}$ should also be able to assign a confidence value between $0$ and $1$ to concepts that are not related.
+If $\mathcal{K}$ cannot prove any relationship between $C$ and $D$ then $\mathcal{G}(C,D)$ assigns a value between $0$ and $1$.
+Note that we do not assume to have access to the ground truth $\mathcal{G}$.
+We only assume that there is some ground truth $\mathcal{G}$ that we would like to approximate.
+The goal of the NN is to generate an embedding function $E$ such that $E$ is as close to $\mathcal{G}$ as possible.
+
+This allows us to assess the quality of the embedding function by measuring the expected square error of the embedding function from the ground truth.
+\[
+    \mathcal{L}:=\mathbb{E}_{C,D\in\dlconcepts}[(E(C,D)-\mathcal{G}(C,D))^2]
+\]
+This function is what we call the loss function.
+
+Thus, given a class of possible embedding classes $\mathcal{E}$ (called the hypothesis class), the goal of the NN is to find an embedding function $E\in\mathcal{E}$
+such that
+\[
+    E=\argmin_{E'\in\mathcal{E}}\mathcal{L}_{\mathcal{G}}(E')    
+\]
+
+
+However, due to computational constraints, 
+training is rarely done on all possible concept pairs. To train our model, we sample a set of input-output
+data points $\mathbb{D}=\{((C_i,D_i),\delta_{\mathcal{K}\vdash C_i\sqsubseteq D_i})\}$
+where $\delta$ is the Kronecker delta function.
+Thus what we actually compute is
+\[
+    \mathcal{L}_{\mathbb{D}}:=\mathbb{E}_{((C,D),l)\in\mathbb{D}}[(E(C,D)-l)^2]
+\]
+This function is what we call the empirical loss function. The goal of the NN is to minimize the empirical loss function
+with the hope that the small dataset models sufficiently well the loss over the ground truth.
+This is called the \it{Empirical Risk Minimization} (ERM) principle.
+
+In \cite{AgnosticPAC} it has been shown that if the hypothesis class $\mathcal{E}$ is finite, 
+then there exists a polynomial time learning algorithm
+that can get sufficiently close to the ERM solution by minimizing the empirical loss function
+and increasing the amount of data points in $\mathbb{D}$.
