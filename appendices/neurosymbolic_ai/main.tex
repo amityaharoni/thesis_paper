@@ -10,3 +10,97 @@ provide a brief introduction to the Neural Neutwork algorithms (NNs) that use kn
 
 \input{appendices/neurosymbolic_ai/motivation.tex}
 \input{appendices/neurosymbolic_ai/goal.tex}
+
+\section{Artificial Neural Networks}
+We saw that for any
+finite hypothesis class $\mathcal{H}$ it is possible to find a polynomial time 
+algorithm that can get sufficiently close to the ERM solution by 
+minimizing the empirical loss function.
+
+Given a sample space $X$,
+we can think of the hypothesis class $\mathcal{H}$ as
+a function $f:\Theta\to\mathcal{H}$
+where $\Theta$ is a set of hyperparameters 
+that fix a single hypothesis in $\mathcal{H}$.
+If $f$ is continuous, then we can find the ERM solution by
+taking the derivative of the empirical loss function with respect to $\Theta$ and setting it to $0$.
+\[
+    \frac{\partial}{\partial\Theta}\mathcal{L}_{\mathbb{D}}(f(\Theta))=0    
+\]
+We can then use algebraic methods to solve for $\Theta$. 
+This approach relies on having a nicely behaved function $f$ for which we can solve
+the differential equation above.
+However in practice it is difficult to identify the hypothesis class $\mathcal{H}$ 
+with a nicely behaving function $f$.
+We can however identify a function $f$ that can approximate many hypothesis classes
+and use a version of gradient descent to find the ERM solution.
+The function $f$ that we would use is called a neural network and the learning
+algorithm is called stochastic gradient descent.
+
+However, we wish to find a methodological way to generate a learning algorithm
+that can get sufficiently close to the ERM solution for any hypothesis class.
+This is the goal of the field of \it{machine learning}.
+Neural networks are a family of machine learning algorithms that have been shown to be
+effective in practice for a wide range of tasks. 
+\subsection{Architecture}
+\begin{definition}[Neural Network Architecture]
+    A neural network architecture is a tuple $(G,\Sigma)$ where
+    \begin{enumerate}
+        \item $G=(V,E)$ is an acyclic directed graph.
+        \item $V$ is composed of layers $V=\bigsqcup^L_{l=0} V_l$.
+        \item For every edge $e\in E$, there exists an $l\in[L-1]$ such that 
+        the source node of $e$ is in layer 
+        $l$ and the target node is in layer $l+1$.
+        \item $\Sigma$ is a collection of non-polynomial
+        functions
+        $\{\sigma_{i}:\mathbb{R}^{\lvert V_{l}\rvert}\to\mathbb{R}^{\lvert V_{l}\rvert}\}_{l\in [L-1]}$.
+    \end{enumerate}
+    $L$ is called the depth of the neural network,
+    for any $l\in[L]$, we call $V_l$ the $l$-th layer of the neural network.
+    We call $V_0$ the input layer and $V_L$ the output layer.
+    The layers in between are called hidden layers.
+    The size of the $l$-th layer $\lvert V_l \rvert$ is called the width of the layer.
+
+    For any $l\in[L]$, we call $\sigma_l$ the activation function of the $l$-th layer.
+\end{definition}
+\begin{definition}[Neural Network]
+    Given a neural network architecture $(G,\Sigma)$,
+    a neural network consists of
+    \begin{enumerate}
+        \item A set of matrices $W=\{W_l\}_{l=1}^L$ where $W_l$ is a matrix of size
+        $\lvert V_l\rvert\times\lvert V_{l+1}\rvert$. Furthermore, $W_{l,i,j}=0$ if
+        $(v_{l,i},v_{l+1,j})\not\in E$.
+        \item A set of vectors $B=\{B_l\}_{l=1}^L$ where $B_l$ is a vector of size
+        $\lvert V_{l+1}\rvert$.
+    \end{enumerate}
+    We call $W$ the weight matrices and $B$ the bias vectors.
+\end{definition}
+Given a neural network $(G,\Sigma)$ with a set of weight matrices $W$ and bias vectors $B$,
+we define the set of preactivation functions $Z=\{z_l:\mathbb{R}^{\lvert V_l\rvert}\to\mathbb{R}^{\lvert V_{l+1}\rvert}\}_{l\in[L-1]}$ where
+\begin{align*}
+    z_{l}(\mathbf{x})&= \sigma_{l}(\mathbf{x})\cdot W_{l+1} +B_{l+1}
+\end{align*}
+
+And the function represented by the neural network is the concatenation of the preactivation functions:
+\[
+    f_{W,B}(\mathbf{x})=\bigcirc_{l=0}^{L-1} z_l(\mathbf{x})
+\]
+
+The pair of weights and biases $\Theta=(W,B)$ is called the parameters of the neural network.
+
+The main reason for the popularity of neural networks is the universal approximation theorem.
+\begin{theorem}[Universal Approximation Theorem]
+    Let $\sigma:\mathbb{R}\to\mathbb{R}$ be a non-constant, bounded, and continuous function.
+    Let $I\subseteq\mathbb{R}^n$ be a compact set.
+    Then for any $\epsilon>0$ and any continuous function $f:I\to\mathbb{R}$,
+    there exists an architecture $(G,\Sigma)$ 
+    and a set of weights $W$ and biases $B$ such that
+    \[
+        \lvert f(x)-f_{W,B}(x)\rvert<\epsilon
+    \]
+    for all $x\in I$.
+\end{theorem}
+
+\subsection{Training}
+It is now left to find a method to find the parameters $\Theta$ of a neural network
+that minimize the empirical loss function.

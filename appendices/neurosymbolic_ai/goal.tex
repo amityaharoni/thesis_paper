@@ -1,6 +1,7 @@
 \section{The Goal of Supervised Learning}
 To describe the training algorithm of NNs, it is important to first describe the task 
 that NNs are trying to solve.
+We call the space of all possible inputs $\dlconcepts$ the sample space.
 Suppose that there is some ground truth $\mathcal{G}:\dlconcepts\times\dlconcepts\to[0,1]$.
 This ground truth represents the relationship between the concepts in the knowledge base.
 If $\mathcal{K}\vdash C\subseteq D$ then $\mathcal{G}(C,D)=1$ and if $\mathcal{K}\vdash C\not\subseteq D$ then $\mathcal{G}(C,D)=0$.
@@ -41,3 +42,7 @@ In \cite{AgnosticPAC} it has been shown that if the hypothesis class $\mathcal{E
 then there exists a polynomial time learning algorithm
 that can get sufficiently close to the ERM solution by minimizing the empirical loss function
 and increasing the amount of data points in $\mathbb{D}$.
+
+While the finite hypothesis class assumption seems theoratically too strong,
+due to the computational limitations of all algorithms
+the assumption holds for any hypothesis class that is used in practice.
