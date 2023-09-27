@@ -1,0 +1,128 @@
+\refstepcounter{chapter}%
+\chapter*{\thechapter \quad Categorical Logic}
+As mentioned in the previous chapter,
+knowledge base embeddings are maps that approximately preserves the structure of the knowledge base.
+We hinted towards the idea that 'preserving the structure' entails
+that
+\begin{gather*}
+    \mathcal{K}\vdash C\sqsubseteq D \implies \mathcal{D}(E(C),E(D))\approx 1\\
+    \mathcal{K}\vdash C\not\sqsubseteq D \implies \mathcal{D}(E(C),E(D))\approx 0
+\end{gather*}
+where $\mathcal{D}$ is the decoding function.
+This assumption would mean that $\mathcal{D}$ preserves the subsumption relation of the knowledge base
+'in some way'.
+
+Notice that 'in some way' is not a precise criteria. While we can compute 'how much' 
+$\mathcal{D}$ preserves the subsumption relation of the knowledge base,
+we would like to understand what it means for a map to preserve the subsumption relation of the knowledge base.
+This is crucial both in order to be able to calculate what an optimal $\mathcal{D}$
+should be and to be able to understand what are the constraints that we should impose on $\mathcal{D}$.
+
+Not only that, but we might wish to explore other properties of the knowledge base that we would like to preserve.
+For instance, we might want to explore the possibility that $E$
+preserves the constructors of the description logic. E.g.
+\begin{gather*}
+    \mathcal{K}\vdash B\sqsubseteq C\sqcap D \implies \mathcal{D}(E(B),E(C))\approx 1\text{ and } \mathcal{D}(E(B),E(D))\approx 1
+    \\
+    \mathcal{K}\vdash B\sqcup C\sqsubseteq D \implies \mathcal{D}(E(B),E(C))\approx 1\text{ and } \mathcal{D}(E(B),E(D))\approx 1
+    \\
+    \vdots
+\end{gather*}
+Understanding what it means for a map to preserve the structure of a knowledge base
+would allow us to prceisely define the constraints that we should impose on 
+an embedding and the decoding function in order to preserve the structure of the knowledge base
+that we are trying to embed.
+
+Category theory provides a framework to discuss questions of structure preservence of maps.
+We would develop the core ideas relevant to this thesis in this chapter.
+
+\section{Categories}
+As mentioned above, category theory provides a framework to discuss questions of 
+structure preservence of maps.
+In this section we shall introduce the core ideas of category theory.
+In foundational mathematics,two objects 
+are considered to be the equal if they are made of the same 
+elements.
+
+For instance, two groups $(G,\circ_1), (H,\circ_2)$ are considered to be equal if
+$G=H$ and $\circ_1=\circ_2$.
+Most mathematicians would consider this condition
+to be too strong. Most mathematicians would consider two 
+groups to be 'equal' (\it{isomorphic}) if they behave the same way.
+I.e. if there is a bijection $f:G\to H$ such that
+\[
+    f(g_1\circ_1 g_2)=f(g_1)\circ_2 f(g_2)
+\]
+for all $g_1,g_2\in G$.
+This means that the elements of $G$ and $H$ are not 
+necessarily the same,
+but they behave the same way.
+'Behaving the same way' can mean 
+different things in different domains of mathematics.
+Each domain of mathematics
+can be seen as a category $\mathcal{C}$ which consists
+of the collection mathematical objects $\mathcal{C}_0$ of interest and 
+the collection of maps $\mathcal{C}_1$ 
+between them are the maps that preserve
+the structure of the objects.
+Given two objects $A,B\in\mathcal{C}_0$,
+we denote the set of maps $f:A\to B$
+by $\mathcal{C}(A,B)$.
+
+As the maps preserve the structure of the objects, meaning
+that they do not break the structure of the objects,
+we should be able to compose them.
+Hence a category should come equipped with a composition
+operator
+\[
+    \circ:\mathcal{C}_1\times\mathcal{C}_1\to\mathcal{C}_1
+\]
+such that given $f:A\to B$ and $g:B\to C$,
+we have $g\circ f:A\to C$.
+
+As categories express the meaning of 'behaving the same way',
+we should be able to distinguish
+between objects that are identical and objects that are 
+isomorphic.
+For every object $A\in\mathcal{C}_0$,
+there should be an identity map $\mathbf{1}_A:A\to A$.
+The identity map should be the identity element of 
+the composition operator as well i.e.
+\[
+    \mathbf{1}_A\circ f=f\circ \mathbf{1}_A=f
+\]
+for all $f:A\to B$.
+
+We now have all the ingredients to define a category.
+
+\begin{definition}[Category]
+    Given a collection of objects $\mathcal{C}_0$ and a collection of maps $\mathcal{C}_1\subseteq \mathcal{C}_0\times\mathcal{C}_0$,
+    a category $\mathcal{C}$ is a tuple $(\mathcal{C}_0,\mathcal{C}_1,\circ)$ where
+    \begin{itemize}
+        \item[compositionality] $\circ:\mathcal{C}_1\times\mathcal{C}_1\to\mathcal{C}_1$ is a
+        map such that for every $f:A\to B$ and $g:B\to C$, we have $g\circ f:A\to C$.
+        \item[existence of identity] For every $A\in\mathcal{C}_0$, there exists an identity map $\mathbf{1}_A:A\to A$
+        such that for every $f:A\to B$, we have $f\circ \mathbf{1}_A=f$ and $\mathbf{1}_B\circ f=f$.
+        \item[associativity] For every $f:A\to B$ and $g:B\to C$ and $h:C\to D$, we have $h\circ (g\circ f)=(h\circ g)\circ f$.
+    \end{itemize}
+\end{definition}
+
+Two objects $A,B\in\mathcal{C}_0$ are isomorphic if
+for any property, relevant to the specific domain of mathematics,
+that $A$ satisfies, $B$ satisfies as well.
+In category theory, this translates
+to the existence of two maps $f:A\to B$ and $f^{-1}:B\to A$
+such that $f^{-1}\circ f=\mathbf{1}_A$ and $f\circ f^{-1}=\mathbf{1}_B$.
+We call $f$ the isomorphism between $A$ and $B$ and
+we call $f^{-1}$ the inverse of $f$.
+We denote the set of isomorphisms between $A$ and $B$ by
+$A\cong B$.
+
+As this thesis focuses on the structure of knowledge bases,
+we would be interested in categories that are relevant for logic. We provide examples of such categories.
+
+\section{Lattices}
+A very simple example of a category is a post $(P,\leq)$. 
+The elemenets of a poset are the objects of the category and the arrows (maps) are the order relations.
+The transitivity of the order relation implies that the composition of two arrows is an arrow.
+The reflexivity of $\leq$ implies that the identity map is the arrow $a\leq a$.
