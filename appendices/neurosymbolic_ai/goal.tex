@@ -4,18 +4,26 @@ that NNs are trying to solve.
 We call the space of all possible inputs $\dlconcepts$ the sample space.
 Suppose that there is some ground truth $\mathcal{G}:\dlconcepts\times\dlconcepts\to[0,1]$.
 This ground truth represents the relationship between the concepts in the knowledge base.
-If $\mathcal{K}\vdash C\subseteq D$ then $\mathcal{G}(C,D)=1$ and if $\mathcal{K}\vdash C\not\subseteq D$ then $\mathcal{G}(C,D)=0$.
+If $\mathcal{K}\vdash C\sqsubseteq D$ then $\mathcal{G}(C,D)=1$ and if $\mathcal{K}\vdash C\not\sqsubseteq D$ then $\mathcal{G}(C,D)=0$.
 As mentioned in \ref{item:kb_completion}, one goal of NNs is
 to diagnose possible relations between concepts that could not be directly inferred (or potentially require a lot of computation to infer) from the knowledge base.
 Hence the ground truth $\mathcal{G}$ should also be able to assign a confidence value between $0$ and $1$ to concepts that are not related.
 If $\mathcal{K}$ cannot prove any relationship between $C$ and $D$ then $\mathcal{G}(C,D)$ assigns a value between $0$ and $1$.
 Note that we do not assume to have access to the ground truth $\mathcal{G}$.
 We only assume that there is some ground truth $\mathcal{G}$ that we would like to approximate.
-The goal of the NN is to generate an embedding function $E$ such that $E$ is as close to $\mathcal{G}$ as possible.
+The goal of the NN is to generate an embedding function $E$ such that $E$ generates a representation
+of the concepts in the hyperplane $\mathbb{R}^n$ that
+is as close to $\mathcal{G}$ as possible.
+In some AI algorithms, called autoencoders,
+the NN is trained to generate an encoder function $E:\dlconcepts\to\mathbb{R}^n$ and a decoder function 
+$D:\mathbb{R}^n\times\mathbb{R}^n \to\dlconcepts$ such that $D(E,E)$ is as close to the ground truth as possible.
+That is, the encoding-deconding preserves the structure of the knowledge base.
+In this thesis and the papers that we survey, the decoding function is a fixed function $\mathcal{D}: \mathbb{R}^n\times\mathbb{R}^n\to\dlconcepts$
+that is not learned by the NN and we only train the embedding function $E$.
 
-This allows us to assess the quality of the embedding function by measuring the expected square error of the embedding function from the ground truth.
+This formulation allows us to assess the quality of the embedding function by measuring the expected square error of the embedding function from the ground truth.
 \[
-    \mathcal{L}:=\mathbb{E}_{C,D\in\dlconcepts}[(E(C,D)-\mathcal{G}(C,D))^2]
+    \mathcal{L}_{\mathcal{G}}(E):=\mathbb{E}_{C,D\in\dlconcepts}[(\mathcal{D}(E(C),E(D))-\mathcal{G}(C,D))^2]
 \]
 This function is what we call the loss function.
 
@@ -32,7 +40,7 @@ data points $\mathbb{D}=\{((C_i,D_i),\delta_{\mathcal{K}\vdash C_i\sqsubseteq D_
 where $\delta$ is the Kronecker delta function.
 Thus what we actually compute is
 \[
-    \mathcal{L}_{\mathbb{D}}:=\mathbb{E}_{((C,D),l)\in\mathbb{D}}[(E(C,D)-l)^2]
+    \mathcal{L}_{\mathbb{D}}:=\mathbb{E}_{((C,D),l)\in\mathbb{D}}[(\mathcal{D}(E(C),E(D))-l)^2]
 \]
 This function is what we call the empirical loss function. The goal of the NN is to minimize the empirical loss function
 with the hope that the small dataset models sufficiently well the loss over the ground truth.

@@ -1,0 +1,491 @@
+\refstepcounter{chapter}%
+\chapter*{\thechapter \quad Categorical Logic}
+As mentioned in the previous chapter,
+knowledge base embeddings are maps that approximately preserves the structure of the knowledge base.
+We hinted towards the idea that 'preserving the structure' entails
+that
+\begin{gather*}
+    \mathcal{K}\vdash C\sqsubseteq D \implies \mathcal{D}(E(C),E(D))\approx 1\\
+    \mathcal{K}\vdash C\not\sqsubseteq D \implies \mathcal{D}(E(C),E(D))\approx 0
+\end{gather*}
+where $\mathcal{D}$ is the decoding function.
+This assumption would mean that $\mathcal{D}$ preserves the subsumption relation of the knowledge base
+'in some way'.
+
+Notice that 'in some way' is not a precise criteria. While we can compute 'how much' 
+$\mathcal{D}$ preserves the subsumption relation of the knowledge base using the expected loss,
+we would like to understand what it means for a map to preserve the subsumption relation of the knowledge base.
+This is crucial both in order to find an optimal $\mathcal{D}$
+and to be able to understand what are the constraints that we should impose on $\mathcal{D}$.
+
+Not only that, but we might wish to explore other properties of the knowledge base that we would like to preserve.
+For instance, we might want to explore the possibility that $E$
+preserves the constructors of the description logic. E.g.
+\begin{gather*}
+    \mathcal{K}\vdash B\sqsubseteq C\sqcap D \implies \mathcal{D}(E(B),E(C))\approx 1\text{ and } \mathcal{D}(E(B),E(D))\approx 1
+    \\
+    \mathcal{K}\vdash B\sqcup C\sqsubseteq D \implies \mathcal{D}(E(B),E(C))\approx 1\text{ and } \mathcal{D}(E(B),E(D))\approx 1
+    \\
+    \vdots
+\end{gather*}
+Understanding what it means for a map to preserve the structure of a knowledge base
+would allow us to prceisely define the constraints that we should impose on 
+an embedding and the decoding function in order to preserve the structure of the knowledge base
+that we are trying to embed.
+
+Category theory provides a framework to discuss questions of structure preservence of maps.
+We would develop the core ideas relevant to this thesis in this chapter.
+
+\section{Categories and Algebraic Logic}\label{sec:cat_alg_logic}
+In this section we shall develop the core ideas of category theory and basic objects in the field
+by working through the example of algebraic logic.
+Algebraic logic is a branch of mathematical logic that represents logics as algebraic structures.
+This allows us to use rigorous mathematical tools to study the properties of logics.
+The properties of a logic can often be understood by 
+the provability relation $\vdash$ of the logic.
+
+In mathematics, it is often important to distinguish between equality and isomorphism.
+Equality is often interpreted as Leibniz's principle of indiscernibility of identicals.
+That is, two objects $A$ and $B$ are equal if for any property $P$, $P(A)\iff P(B)$.
+While this property is useful for explicitly constructing objects,
+it is often too restrictive for discussing the properties of objects under
+a given mathematical theory. For instance, set theory
+provides us with multiple ways of constructing a model of the natural numbers.
+While these constructions are useful for showing that we can construct the natural numbers,
+they are not equal to one another, they have different properties.
+When we wish to explore number theoratic or algebraic properties of the natural numbers,
+we woud restrict to properties that are relevant for such topics. Thus, our
+models of the natural numbers would behave the same under those properties. This notion
+of sameness is called isomorphism. The collection of objects that we are concerned
+with is called a category. For instance the cateogry of algebraic structures.
+
+It is usually not practical to classify all the properties that we wish our objects to be invariant under,
+hence we need further assumptions to explore what it means for two objects to be structurally the same.
+Category theory is considered a structuralist approach to mathematics.
+In this approach, mathematical objects are defined by their relations to other objects
+in the same category. 
+Relations here are understood as maps between objects that respect the structure of the objects.
+For instance, in a logic, the falsum object $\bot$ is defined by the fact that for any
+other proposition $p$, $\bot\vdash p$.
+
+Under this approach, two objects are isomorphic if they relate to all objects in the category
+in the same way. For instance, given two propositions $p$ and $q$, we say that $p$ and $q$
+are isomorphic (denoted by $p\cong q$) if for any proposition $r$, $p\vdash r$ if and only if $q\vdash r$.
+Likewise, in the category of sets $\mathbf{Set}$, two sets $A$ and $B$ are isomorphic if and only if
+for any set $C$, there exists a bijection between the set of maps from $A$ to $C$ and the set of maps from $B$ to $C$.
+This essentially boils down to the fact that $A$ and $B$ are in bijection.
+
+Hence, a category $\mathcal{C}$ consists of a collection of objects $\mathcal{C}_0$
+and a collection of maps $\mathcal{C}_1$ between them. Given two objects $A,B\in\mathcal{C}_0$,
+we denote the collection of maps between them by $\mathcal{C}(A,B)$ and call it the hom-set of $A$ and $B$.
+Since isomorphism in the category of sets is bijection, 
+given any category $\mathcal{C}$, and any two objects $A,B\in\mathcal{C}_0$,
+$A\cong B$ is the same as the claim that for any object $C\in\mathcal{C}_0$,
+$\mathcal{C}(A,C)\cong \mathcal{C}(B,C)$.
+
+Isomorphism itself can be understood as a structure preserving map within the category.
+Primarily, every object $p$ in a category is isomorphic to itself through a unique
+map called the identity map $\mathbf{1}_p:p\to p$.
+For any two objects $p,q$ in a category, their isomorphism
+is a map $f:p\to q$ such that there exists an inverse map $f^{-1}:q\to p$ such that
+$f^{-1}\circ f=\mathbf{1}_p$ and $f\circ f^{-1}=\mathbf{1}_q$.
+
+As the maps preserve the structure of the objects, meaning
+that they do not break the structure of the objects,
+we should be able to compose them.
+Hence a category should come equipped with a composition
+operator
+\[
+    \circ:\mathcal{C}_1\times\mathcal{C}_1\to\mathcal{C}_1
+\]
+such that given $f:A\to B$ and $g:B\to C$,
+we have $g\circ f:A\to C$.
+
+We now have all the ingredients to define a category.
+
+\begin{definition}[Category]
+    Given a collection of objects $\mathcal{C}_0$ and a collection of maps $\mathcal{C}_1\subseteq \mathcal{C}_0\times\mathcal{C}_0$,
+    a category $\mathcal{C}$ is a tuple $(\mathcal{C}_0,\mathcal{C}_1,\circ)$ where
+    \begin{itemize}
+        \item[compositionality] $\circ:\mathcal{C}_1\times\mathcal{C}_1\to\mathcal{C}_1$ is a
+        map such that for every $f:A\to B$ and $g:B\to C$, we have $g\circ f:A\to C$.
+        \item[existence of identity] For every $A\in\mathcal{C}_0$, there exists an identity map $\mathbf{1}_A:A\to A$
+        such that for every $f:A\to B$, we have $f\circ \mathbf{1}_A=f$ and $\mathbf{1}_B\circ f=f$.
+        \item[associativity] For every $f:A\to B$ and $g:B\to C$ and $h:C\to D$, we have $h\circ (g\circ f)=(h\circ g)\circ f$.
+    \end{itemize}
+\end{definition}
+
+\begin{example}[Category of sets]
+    The category of sets $\mathbf{Set}$ is a category such that
+    \begin{itemize}
+        \item[objects] The objects of $\mathbf{Set}$ are the sets
+        \item[morphisms] The morphisms of $\mathbf{Set}$ are the functions between sets
+        \item[composition] The composition of two maps $f:A\to B$ and $g:B\to C$ is the reguar composition of functions $g\circ f:A\to C$
+        \item[identity] The identity map of a set $A$ is the map $\mathbf{1}_A:A\to A$ such that for any $a\in A$, $\mathbf{1}_A(a)=a$
+    \end{itemize}    
+\end{example}
+
+\begin{definition}[Subcategory]
+    Given two categories $\mathcal{C}$ and $\mathcal{D}$, a subcategory $\mathcal{D}$ of $\mathcal{C}$ is a pair of subsets
+    $\mathcal{D}_0\subseteq \mathcal{C}_0$ and 
+    $\mathcal{D}_1\subseteq \mathcal{C}_1$
+    such that 
+    \begin{itemize}
+        \item For every $A\in\mathcal{D}_0$, $\mathbf{1}_A\in\mathcal{D}_1$
+        \item For every $f:A\to B\in\mathcal{D}_1$, $A,B\in\mathcal{D}_0$
+        \item For every $f:A\to B\in\mathcal{D}_1$ and $g:B\to C\in\mathcal{D}_1$, $g\circ f\in\mathcal{D}_1$
+    \end{itemize}
+\end{definition}
+
+A very simple example of a category is a poset $(P,\leq)$. 
+The elemenets of a poset are the objects of the category and the arrows (maps) are the order relations.
+The transitivity of the order relation implies that the composition of two arrows is an arrow.
+The reflexivity of $\leq$ implies that the identity map is the arrow $a\leq a$.
+
+Notice that the order relation of a poset behaves 
+like the provability relation $\vdash$ of propositional logic.
+That is, if $p\vdash q$ and $q\vdash t$, then $p\vdash t$,
+$p$ is always a proof of $p$ itself and so on.
+
+However, logic systems usually have more structure than just provability relation.
+For instance, most logic systems have a top and a bottom element, 
+denoted by $\top$ and $\bot$ respectively.
+These two elemenets could be defined through the implication relation as
+the two elements for which, for all $p$, $p\vdash \top$ and $\bot\vdash p$.
+In a category, such elements are called
+\begin{definition}[Initial and Terminal Objects]
+    Given a category $\mathcal{C}$, an object $A\in\mathcal{C}_0$ is called initial if for every $B\in\mathcal{C}_0$,
+    there exists a unique map $f:A\to B$.
+    An object $A\in\mathcal{C}_0$ is called terminal if for every $B\in\mathcal{C}_0$,
+    there exists a unique map $f:B\to A$.
+    We denote these objects by $\bot$ and $\top$ respectively.
+\end{definition}
+A poset that has a top and a bottom element is called a bounded poset.
+
+Likewise, we can define the conjunction and disjunction of two elements
+through the provability relation as follows:
+\begin{definition}[Binary meets and join]
+    For any two elements $p,q$ of a poset $(P,\leq)$, we define
+    the meet $p\wedge q$ and the join $p\vee q$ as the elements such that for any $t\in P$,
+    \begin{gather*}
+        t\leq p\wedge q \iff t\leq p\text{ and }t\leq q\\
+        p\vee q\leq t \iff p\leq t\text{ and }q\leq t
+    \end{gather*}
+\end{definition}
+A poset in which every two elements have a meet (join) is called a meet (join) semilattice.
+A poset that is both a meet and a join semilattice is called a lattice.
+In cateogircal terms, a meet (join) semilattice is a category in which every two objects have a product (coproduct).
+
+\begin{definition}[Products and coproducts]
+    Given a category $\mathcal{C}$ and two objects $A,B\in\mathcal{C}_0$,
+    a product of $A$ and $B$ is an object $A\times B$ and two maps
+    $\pi_1:A\times B\to A$ and $\pi_2:A\times B\to B$ such that for any object $C\in\mathcal{C}_0$
+    and two maps $f:C\to A$ and $g:C\to B$, there exists a unique map $h:C\to A\times B$ such that
+    \[
+        \pi_1\circ h=f\text{ and }\pi_2\circ h=g
+    \]
+    A coproduct of $A$ and $B$ is an object $A\sqcup B$ and two maps
+    $\iota_1:A\to A\sqcup B$ and $\iota_2:B\to A\sqcup B$ such that for any object $C\in\mathcal{C}_0$
+    and two maps $f:A\to C$ and $g:B\to C$, there exists a unique map $h:A\sqcup B\to C$ such that
+    \[
+        h\circ \iota_1=f\text{ and }h\circ \iota_2=g
+    \]
+    Alternatively,
+    the product of two objects $A$ and $B$ is an object such that
+$\mathcal{C}(C,A\times B)\cong \mathcal{C}(C,A)\times \mathcal{C}(C,B)$
+and the coproduct of two objects $A$ and $B$ is an object such that
+$\mathcal{C}(A\sqcup B,C)\cong \mathcal{C}(A,C)\times \mathcal{C}(B,C)$.
+Described in such a way, we can see how similar are the meets and joins to the products and coproducts.
+
+\end{definition}
+
+The existence of binary meets (joins) and the top (bottom) element implies that every finite
+subset of the semilattice has a meet (join).
+We can define the meet (join) of an arbitrary subset of the semilattice
+as the element such that for any $t\in P$,
+\begin{gather*}
+    t\leq \bigwedge S \iff \forall p\in S, t\leq p\\
+    \bigvee S\leq t \iff \forall p\in S, p\leq t
+\end{gather*}
+If every subset of the semilattice has a meet (join), then the semilattice is called a complete meet (join) semilattice.
+
+An arbitrary product (coproduct) of a set of objects is defined similarly as an indexed set of maps
+$\{\pi_i:A_i\to A\}_{i\in I}$ ($\{\iota_i:A\to A_i\}_{i\in I}$) such that for any object $B\in\mathcal{C}_0$
+and a set of maps $\{f_i:B\to A_i\}_{i\in I}$ ($\{g_i:A_i\to B\}_{i\in I}$), there exists a unique map $h:B\to A$ ($h:A\to B$) such that
+\[
+    \pi_i\circ h=f_i\text{ and }h\circ \iota_i=g_i
+\]
+for all $i\in I$.
+A category in which every two objects have a product (coproduct) is called a cartesian (cocartesian) category.
+
+Lastly, we can define the implication relation through the meet and the join as follows:
+\begin{definition}[Implication]
+    Given a poset $(P,\leq)$ and two elements $p,q\in P$, we define the implication $p\Rightarrow q$ as
+    an object such that for any $t\in P$,
+    \[
+        t\leq p\Rightarrow q \iff t\wedge p\leq q
+    \]
+\end{definition}
+If $\bigvee \{t:t\wedge p\leq q\}$ exists, then it is equal to $p\Rightarrow q$.
+In categorical terms, the implication relation is the exponential of two objects.
+\begin{definition}[Exponential]
+    Given a category $\mathcal{C}$ and two objects $A,B\in\mathcal{C}_0$,
+    an exponential of $A$ and $B$ is an object $B^A$ and a map $\epsilon:B^A\times A\to B$ such that for any object $C\in\mathcal{C}_0$
+    and a map $f:C\times A\to B$, there exists a unique map $g:C\to B^A$ such that
+    \[
+        \epsilon\circ (g\times \mathbf{1}_A)=f
+    \]
+    Alternatively we can define it through the hom-set as the unique object $B^A$ such that
+    for any object $C\in\mathcal{C}_0$, we have
+    \[
+        \mathcal{C}(C\times A,B)\cong \mathcal{C}(C,B^A)
+    \]
+\end{definition}
+A category with a terminal object such that
+all pairs of objects have an exponential object and a product is called a cartesian closed category.
+
+Lastly, we can define the negation of an element through the implication relation:
+$\neg p:=p\Rightarrow \bot$.
+A bounded lattice in which every two elements have an implication $a\Rightarrow b$ is called a Heyting algebra.
+A Heyting algebra that also satisfies the law of excluded middle $a\vee \neg a=\top$ is called a Boolean algebra.
+These two types of algebras are the algebraic counterparts of the intuitionistic and classical propositional logic respectively.
+\begin{definition}[Heyting and Boolean algebras]
+    A Heyting algebra is a structure $(H,\leq,\wedge,\vee,\Rightarrow,\bot,\top)$ such that
+    $(H,\leq,\wedge,\vee,\bot,\top)$ is a bounded lattice
+    and $\Rightarrow$ is an implication operator.
+
+    A Boolean algebra is a structure $(B,\leq,\wedge,\vee,\Rightarrow,\bot,\top)$ such that
+    $(B,\wedge,\vee,\Rightarrow,\bot,\top)$ is a Heyting algebra
+    and $\Rightarrow$ satisfies the law of excluded middle $a\vee \neg a=\top$.
+\end{definition}
+
+\begin{definition}[Category of Heyting algebras]
+    The category of Heyting algebras $\mathbf{Heyt}$ is a category such that
+    \begin{itemize}
+        \item[objects] The objects of $\mathbf{Heyt}$ are the Heyting algebras
+        \item[morphisms] The morphisms of $\mathbf{Heyt}$ are the maps that preserve the Heyting algebra structure:
+        \begin{gather*}
+            f(a\wedge b)=f(a)\wedge f(b)\\
+            f(a\vee b)=f(a)\vee f(b)\\
+            f(a\Rightarrow b)=f(a)\Rightarrow f(b)\\
+            f(\bot)=\bot\\
+            f(\top)=\top
+        \end{gather*}
+    \end{itemize}
+\end{definition}
+\section{Functors}
+Often in mathematics, we are interested in the relationship between objects of different type.
+For instance, we might observe that every object $X$ of the category of sets $\mathbf{Set}$
+has a corresponding Heyting algebra $(\mathcal{P}X,\subseteq,\cap,\cup,(X\setminus A),\emptyset,X)$
+(where $A\Rightarrow B:=(X\setminus A)\cup B$).
+
+We want to formalize the ability to map objects of one category to 
+objects of another category.
+The mapping should respect the structure of the category.
+That is, whenever $A\cong B$ in the base category,
+the mapping should map $A$ and $B$ to isomorphic objects in the 
+target category.
+\begin{definition}[Functor]
+    Given two categories $\mathcal{C}$ and $\mathcal{D}$, a functor $F:\mathcal{C}\to\mathcal{D}$ is a pair
+    of maps $F_0:\mathcal{C}_0\to\mathcal{D}_0$ and $F_1:\mathcal{C}_1\to\mathcal{D}_1$ such that
+    \begin{itemize}
+        \item[Respect source and target] Any arrow $f:A\to B$ in $\mathcal{C}$ is mapped to an 
+        arrow $F_1(f):F_0(A)\to F_0(B)$ in $\mathcal{D}$
+        \item[Respect identity] For any $A\in\mathcal{C}_0$, $F_0(\mathbf{1}_A)=\mathbf{1}_{F_0(A)}$
+        \item[Respect composition] For any $f:A\to B$, $F_1(f):F_0(A)\to F_0(B)$
+        and for any $f:A\to B$ and $g:B\to C$, $F_1(g\circ f)=F_1(g)\circ F_1(f)$
+    \end{itemize}
+\end{definition}
+One can show that:
+\begin{lemma}[Functors preserve isomorphism]
+    Given two categories 
+    $\mathcal{C}$ and $\mathcal{D}$ and a 
+    functor $F:\mathcal{C}\to\mathcal{D}$,
+    for any two objects $A,B\in\mathcal{C}_0$,
+    if $A\cong B$, then $F_0(A)\cong F_0(B)$.
+\end{lemma}
+The first example of a functor is the the identity functor $\mathbf{1}_{\mathcal{C}}:\mathcal{C}\to\mathcal{C}$
+which maps every object and every arrow to themselves.
+
+As functors are maps between categories, we can ask whether
+there is a category of categories with functors as morphisms.
+One can easily verify that the composition of two functors $G\circ F$
+(understood in the natural way as the pair of maps $G_0\circ F_0$ and $G_1\circ F_1$) is a functor in itself.
+The composition is also associative.
+Meaning that
+\begin{definition}[Category of categories]
+    The category of categories $\mathbf{Cat}$ is a category such that
+    \begin{itemize}
+        \item[objects] The objects of $\mathbf{Cat}$ are the categories
+        \item[morphisms] The morphisms of $\mathbf{Cat}$ are the functors
+    \end{itemize}
+\end{definition}
+
+\begin{remark}
+    In the previous section we saw that we can consider the collection of all Heyting algebras as a category
+    but we can also consider every Heyting algebra as a category in itself.
+    In this case, we forget the operators
+    and only consider the elements and the order relation.
+
+    Thus Heyting algebras form a subcategory of the category of categories.
+    We shall denote it as $\mathbf{Heyt}_{\leq}$.
+    Notice that the morphisms of $\mathbf{Heyt}_{\leq}$,
+    that is the functors between the categories, are 
+    monotone maps. The morphisms do not necessarily
+    preserve the operators of the Heyting algebra.
+\end{remark}
+
+\section{Natural Transformations and Adjunctions}
+
+The isomorphisms of $\mathbf{Cat}$
+are functors $F$ such that there exists a functor 
+$G$ such that $G\circ F=\mathbf{1}_{\mathcal{C}}$
+and $F\circ G=\mathbf{1}_{\mathcal{D}}$.
+This proves to be a very restrictive notion of isomorphism.
+Afterall, the purpose of category theory is to study properties 
+of objects up to isomorphism. That is,
+it should suffice that 
+for any object $A$ in a category $\mathcal{C}$,
+we have that $G\circ F(A)\cong A$
+and for any object $B$ in a category $\mathcal{D}$,
+we have that $F\circ G(B)\cong B$.
+When this is the case, we say that $\mathcal{C}$ and $\mathcal{D}$ 
+are equivalent categories and denote it by 
+$\mathcal{C}\simeq\mathcal{D}$.
+
+Meaning that we have a family of isomorphism arrows
+$\{\eta_A:A\to G\circ F(A)\}_{A\in\mathcal{C}_0}$
+and
+$\{\epsilon_B:F\circ G(B)\to B\}_{B\in\mathcal{D}_0}$.
+We would also like that the
+arrows agree with the choice of morphisms. That is
+for any arrow $f:X\to Y$ in $\mathcal{C}$,
+we have that $G\circ F(f)\circ \eta_X=\eta_Y\circ f$. This can be
+represented using what is called a commuting diagram:
+\[\begin{tikzcd}
+	X && {GF(X)} \\
+	\\
+	Y && {GF(Y)}
+	\arrow["{GF(f)}"{description}, from=1-3, to=3-3]
+	\arrow["f"{description}, from=1-1, to=3-1]
+	\arrow["{\eta_Y}"{description}, from=3-1, to=3-3]
+	\arrow["{\eta_X}"{description}, from=1-1, to=1-3]
+\end{tikzcd}\]
+and likewise we wish a similar diagram to commute for $FG$.
+
+This construction can actually be understood as a morphism between functors
+$FG$ and $\mathbf{1}_{\mathcal{C}}$.
+\begin{definition}[Natural transformation]
+    Given two functors $F,G:\mathcal{C}\to\mathcal{D}$,
+    a natural transformation $\eta:F\to G$ is a family of arrows
+    $\{\eta_A:F(A)\to G(A)\}_{A\in\mathcal{C}_0}\subseteq\mathcal{D}_1$ 
+    such that for any arrow $f:A\to B$ in $\mathcal{C}$,
+    the following diagram commutes:
+    \[\begin{tikzcd}
+        {F(A)} && {G(A)} \\
+        \\
+        {F(B)} && {G(B)}
+        \arrow["{F(f)}"{description}, from=1-1, to=3-1]
+        \arrow["{\eta_A}"{description}, from=1-1, to=1-3]
+        \arrow["{\eta_B}"{description}, from=3-1, to=3-3]
+        \arrow["{G(f)}"{description}, from=1-3, to=3-3]
+    \end{tikzcd}\]
+\end{definition}
+One can easily verify that the family of 
+identity arrows $\{\mathbf{1}_{F(A)}\}_{A\in\mathcal{C}_0}$
+is an identity natural transformation,
+that the component wise composition of natural transformations
+is a natural transformation and that this operation is assosiative.
+Meaning that:
+\begin{definition}[Category of functors]
+    For any two categories $\mathcal{C}$ and $\mathcal{D}$,
+    there exists a category $[\mathcal{C},\mathcal{D}]$ such that
+    \begin{itemize}
+        \item[objects] The objects of $[\mathcal{C},\mathcal{D}]$ are the functors $F:\mathcal{C}\to\mathcal{D}$
+        \item[morphisms] The morphisms of $[\mathcal{C},\mathcal{D}]$ are the natural transformations
+    \end{itemize}
+\end{definition}
+an equivalence of categories is then
+a pair of
+functors $F:\mathcal{C}\to\mathcal{D}$ 
+and $G:\mathcal{D}\to\mathcal{C}$
+such that
+$G\circ F\cong \mathbf{1}_{\mathcal{C}}$
+and $F\circ G\cong \mathbf{1}_{\mathcal{D}}$.
+
+We already covered one sense in which equivalences preserve
+the structure of the category.
+\begin{definition}[Essential surjection]
+    Given two categories $\mathcal{C}$ and $\mathcal{D}$,
+    a functor $F:\mathcal{C}\to\mathcal{D}$ is essentially surjective 
+    if for every $B\in\mathcal{D}_0$, there exists an 
+    $A\in\mathcal{C}_0$
+    such that $F(A)\cong B$.
+\end{definition}
+
+However, in categories we also wish to preserve the structure of 
+the arrows of the category.
+\begin{definition}[Faithfulness and Fullness]
+    Given two categories $\mathcal{C}$ and $\mathcal{D}$,
+    a functor $F:\mathcal{C}\to\mathcal{D}$ is faithful if for every $A,B\in\mathcal{C}_0$,
+    the map $F_1:\mathcal{C}(A,B)\to\mathcal{D}(F(A),F(B))$ is injective.
+    A functor $F:\mathcal{C}\to\mathcal{D}$ is full if for every $A,B\in\mathcal{C}_0$,
+    the map $F_1:\mathcal{C}(A,B)\to\mathcal{D}(F(A),F(B))$ is surjective.
+\end{definition}
+
+This allows us to express what it means for two categories to be equivalent:
+\begin{lemma}[Equivalent categories]
+    Given two categories $\mathcal{C}$ and $\mathcal{D}$,
+    $\mathcal{C}\simeq\mathcal{D}$ if and only if there exists a functor 
+    $F:\mathcal{C}\to\mathcal{D}$
+    that is essentially surjective, faithful and full.
+\end{lemma}
+
+We wish now to weaken further the notion of equivalence.
+For that we need to introduce the notion of universal constructions.
+
+\subsection{Universal Constructions}
+In \ref{sec:cat_alg_logic} we saw that the conjunction and 
+disjunction of two elements
+can be understood as a situation in which 'every object that exhibit a
+certain arrow pattern has an arrow to/from a unique object'.
+This suggests that there is a certain category of
+'objects that exhibit a certain arrow pattern' 
+that has a terminal/initial object.
+
+\begin{definition}[Diagram]
+    Given a category $\mathcal{C}$ and a category
+    $\mathcal{D}$, a diagram $D$ of 
+    shape $\mathcal{D}$ in $\mathcal{C}$
+    is a functor $D:\mathcal{D}\to\mathcal{C}$.
+\end{definition}
+
+\begin{definition}[Cone]
+    Given a diagram $D$ of shape $\mathcal{D}$ in $\mathcal{C}$,
+    a cone over $D$ is a pair $(A,\eta)$ where $A\in\mathcal{C}_0$
+    and $\eta$ is a 
+    natural transformation $\{\eta_X:A\to D(X)\}_{X\in\mathcal{D}_0}$.
+\end{definition}
+
+Given two cones $(A,\eta)$ and $(B,\epsilon)$ over functor $D$,
+we can define a morphism between them as a map $f:A\to B$ such that
+for any $X\in\mathcal{D}_0$, $\epsilon_X\circ f=\eta_X$.
+This defines a category of cones over $D$.
+If that category has a terminal object, 
+then we say that the diagram $D$ has a limit.
+If that category has an initial object, 
+then we say that the diagram $D$ has a colimit.
+
+\begin{example}[Product and coproduct]
+    Let $\mathcal{D}$ be the category with two objects $0$ and $1$ 
+    and no arrows between them.
+    A diagram of shape $\mathcal{D}$ in a category $\mathcal{C}$
+    is just a pair of objects $A,B\in\mathcal{C}_0$.
+    A cone over this diagram is an object $C\in\mathcal{C}_0$
+    and two maps $\pi_1:C\to A$ and $\pi_2:C\to B$.
+    The limit of this diagram is the product of $A$ and $B$.
+    The colimit of this diagram is the coproduct of $A$ and $B$.
+\end{example}
+
+Once we introduced natural transformation,
+we can define an even weaker notion of similarity between two categories.
