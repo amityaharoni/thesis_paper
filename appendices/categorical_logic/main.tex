@@ -34,7 +34,18 @@ an embedding and the decoding function in order to preserve the structure of the
 that we are trying to embed.
 
 Category theory provides a framework to discuss questions of structure preservence of maps.
-We would develop the core ideas relevant to this thesis in this chapter.
+We would develop the core ideas relevant to this thesis in this chapter. This
+chapter would focus on the basic ideas of category theory.
+Since
+the majority of applications of category theory in AI are novel,
+and the main topic of the thesis, we would not cover them in this chapter.
+Instead, our main source of motivation would be the application of category theory in logic.
+
+Description logics are a fragment of first order logic. Hence, if category theory
+is to be useful for formalizing the structure of description logics,
+it should be able to formalize the structure of first order logic.
+We would gradually build up the necessary tools to formalize the structure of first order logic
+while exploring the foundations of category theory.
 
 \section{Categories and Algebraic Logic}\label{sec:cat_alg_logic}
 In this section we shall develop the core ideas of category theory and basic objects in the field
@@ -198,6 +209,16 @@ $\mathcal{C}(A\sqcup B,C)\cong \mathcal{C}(A,C)\times \mathcal{C}(B,C)$.
 Described in such a way, we can see how similar are the meets and joins to the products and coproducts.
 
 \end{definition}
+\begin{remark}[Co-object and duality]
+    Notice that the definition of a coproduct is the same as the definition of a product
+    but with the arrows reversed. When this is the case, we say that the object is dual
+    to the other object and call it the co-object of the other object.
+    Often times duality allows us to prove theorems about one object by proving the dual theorem
+    about the dual object (i.e. by reversing the arrows).
+
+    The dual of a category $\mathcal{C}$ is denoted by $\mathcal{C}^{op}$ and is defined as the category
+    with the arrows of $\mathcal{C}$ reversed.
+\end{remark}
 
 The existence of binary meets (joins) and the top (bottom) element implies that every finite
 subset of the semilattice has a meet (join).
@@ -285,7 +306,7 @@ The mapping should respect the structure of the category.
 That is, whenever $A\cong B$ in the base category,
 the mapping should map $A$ and $B$ to isomorphic objects in the 
 target category.
-\begin{definition}[Functor]
+\begin{definition}[Covariant Functor]
     Given two categories $\mathcal{C}$ and $\mathcal{D}$, a functor $F:\mathcal{C}\to\mathcal{D}$ is a pair
     of maps $F_0:\mathcal{C}_0\to\mathcal{D}_0$ and $F_1:\mathcal{C}_1\to\mathcal{D}_1$ such that
     \begin{itemize}
@@ -295,6 +316,12 @@ target category.
         \item[Respect composition] For any $f:A\to B$, $F_1(f):F_0(A)\to F_0(B)$
         and for any $f:A\to B$ and $g:B\to C$, $F_1(g\circ f)=F_1(g)\circ F_1(f)$
     \end{itemize}
+\end{definition}
+\begin{definition}[Contravariant Functor]
+    Given categories $\mathcal{C}$,
+    we call a functor contravariant if its domain is the dual of $\mathcal{C}$.
+    That is $F:\mathcal{C}^{op}\to\mathcal{D}$ and for any $f,g$ in $\mathcal{C}$,
+    $F(g\circ f)=F(f)\circ F(g)$.
 \end{definition}
 One can show that:
 \begin{lemma}[Functors preserve isomorphism]
@@ -451,7 +478,11 @@ can be understood as a situation in which 'every object that exhibit a
 certain arrow pattern has an arrow to/from a unique object'.
 This suggests that there is a certain category of
 'objects that exhibit a certain arrow pattern' 
-that has a terminal/initial object.
+that has a terminal/initial object. Such structures are called limits and colimits.
+
+In this section, we shall formalize this notion.
+Then, we shall show its relevance for logic by providing examples of other limits and colimits
+in the category of contexts.
 
 \begin{definition}[Diagram]
     Given a category $\mathcal{C}$ and a category
@@ -473,11 +504,26 @@ for any $X\in\mathcal{D}_0$, $\epsilon_X\circ f=\eta_X$.
 This defines a category of cones over $D$.
 If that category has a terminal object, 
 then we say that the diagram $D$ has a limit.
-If that category has an initial object, 
-then we say that the diagram $D$ has a colimit.
+
+\begin{remark}[Cocones and colimits]
+    Dually, we can define a cocone over a diagram $D$ as a pair $(A,\eta)$
+    where $A\in\mathcal{C}_0$ and $\eta$ is a natural transformation
+    $\{\eta_X:D(X)\to A\}_{X\in\mathcal{D}_0}$.
+    We can define a morphism between two cocones $(A,\eta)$ and $(B,\epsilon)$
+    as a map $f:A\to B$ such that for any $X\in\mathcal{D}_0$, $f\circ \eta_X=\epsilon_X$.
+    If the category of cocones over $D$ has an initial object, then we say that $D$ has a colimit.
+\end{remark}
+
+\begin{example}[Initial and Terminal objects]
+    Let $\mathbf{0}$ be the category with no objects and no arrows.
+    A diagram of shape $\mathbf{0}$ in a category $\mathcal{C}$ is just the empty functor.
+    A cone and a cocone over this diagram is an object $A\in\mathcal{C}_0$.
+    The limit of this diagram is the terminal object of $\mathcal{C}$.
+    The colimit of this diagram is the initial object of $\mathcal{C}$.
+\end{example}
 
 \begin{example}[Product and coproduct]
-    Let $\mathcal{D}$ be the category with two objects $0$ and $1$ 
+    Let $\mathcal{2}$ be the category with two objects $0$ and $1$ 
     and no arrows between them.
     A diagram of shape $\mathcal{D}$ in a category $\mathcal{C}$
     is just a pair of objects $A,B\in\mathcal{C}_0$.
@@ -487,5 +533,361 @@ then we say that the diagram $D$ has a colimit.
     The colimit of this diagram is the coproduct of $A$ and $B$.
 \end{example}
 
-Once we introduced natural transformation,
-we can define an even weaker notion of similarity between two categories.
+A useful example for limits is context categories.
+Whereas the syntax of propositional logic has sentences, that of first order logic has
+formulas in contexts: A context is an ordered (finite) tuple of (individual) variables that
+are all distinct. A formula $\varphi$ can be in a context $(x_1,\dots,x_n)$ if every free variable of
+$\varphi$ is among $x_1,\dots,x_n$. Then we write
+$(x_1,\dots,x_n)\mid \varphi$
+to denote that $\varphi$ is a formula in the context $(x_1,\dots,x_n)$.
+We say that individuals $a_1,\dots,a_n$ satisfy the formula $\varphi$ in the context $(x_1,\dots,x_n)$
+if substituting $a_1,\dots,a_n$ for $x_1,\dots,x_n$ respectively in $\varphi$ yields a true formula.
+In category theory, we assign to each variable $x$ a type.
+Thus, we write
+$x:\text{person},y:\text{person}\mid \text{loves}(x,y)$ for 'a person $x$ loves a person $y$'.
+We say that $x$ is a term of type $\text{person}$.
+Note that the order of the variables is important: $(a,b)$ satisfies 
+$y:\text{person},x:\text{person}\mid \text{loves}(x,y)$ 
+would mean that $b$ loves $a$. Instead of listing the variables $(x_1,\dots,x_n)$,
+we often write $\bar{x}$.
+
+
+In the next section we would show how to construct first order formulas 
+using contexts. For now, we shall only consider the category of contexts.
+We consider base objects of the category to be of the form $X,Y,Z,\dots$.
+These represent the types of the variables.
+Since the variables in the context are distinct, it suffices to 
+consider the order of the types in the context. Thus, we can represent a context
+as a product: $X\times X,Y\times X,Z\times X\times Y,\dots$.
+
+The morphisms between contexts are the substitutions of variables.
+For instance: given a context $x_1:X,x_2:Y,x_3:Z$,
+and a context $y_1:Y,y_2:Z$,
+we can define a substitution $f$ such that $f(x_1)=y_1$ and $f(x_2)=y_2$.
+This would suggest that two contexts are isomorphic if they are the same
+up to permutation e.g. $X\times Y\times Z\cong Y\times X\times Z$.
+
+We would also like the ability to discuss the equality between two substitutions.
+We say that two substitutions $f,g:\Gamma\to\Delta$ are equal if 
+the subset $E$ of elements of $\Gamma$ on which $f$ and $g$ agree is the whole of $\Gamma$.
+This is describeable using limits:
+\begin{definition}[Equalizer]
+    Given a category $\mathcal{C}$ and two arrows $f,g:A\to B$ in $\mathcal{C}$,
+    the equalizer of $f$ and $g$ is an object $E$ and an arrow $e:E\to A$ such that
+    for any object $X$ and arrow $h:X\to A$ such that $f\circ h=g\circ h$,
+    there exists a unique arrow $u:X\to E$ such that $e\circ u=h$.
+    \[\begin{tikzcd}
+        E && A \\
+        \\
+        X && B
+        \arrow["e"{description}, from=1-1, to=1-3]
+        \arrow["h"{description}, from=3-1, to=1-3]
+        \arrow["u"{description}, dashed, from=3-1, to=1-1]
+        \arrow[""{name=0, anchor=center, inner sep=0}, "{f}"{description}, from=1-3, to=3-3, bend left=49, crossing over]
+        \arrow[""{name=1, anchor=center, inner sep=0}, "{g}"{description}, from=1-3, to=3-3, bend right=49, crossing over]
+    \end{tikzcd}\]
+\end{definition}
+The equalizer is the limit of the diagram
+\[\begin{tikzcd}
+    A && B
+    \arrow["f"{description}, from=1-1, to=1-3, shift left=1]
+    \arrow["g"{description}, from=1-1, to=1-3, shift right=1]
+\end{tikzcd}\]
+
+Given three contexts $\Gamma,\Delta,\Theta$ and two substitutions $f:\Gamma\to\Theta$ 
+and $g:\Delta\to\Theta$,
+we can also define a notion of $f$ and $g$ being 'the same'
+up to $\Theta$ through the idea of a pullback:
+\begin{definition}[Pullback]
+    Given a category $\mathcal{C}$ and two arrows $f:A\to C$ and $g:B\to C$,
+    the pullback of $f$ and $g$ is an object $A\times_C B$
+     and two arrows $p_1:A\times_C B\to A$ and $p_2:A\times_C B\to B$ such that
+    for any object $X$ and arrows $h_1:X\to A$ and $h_2:X\to B$ such that $f\circ h_1=g\circ h_2$,
+    there exists a unique arrow $u:X\to A\times_C B$ such that $p_1\circ u=h_1$ and $p_2\circ u=h_2$.
+\end{definition}
+Pullbacks would become very useful in the following chapters.
+For now, they are important for the following proposition:
+\begin{theorem}[Charactarization of Finitely Complete Categories]
+    A category $\mathcal{C}$ is called finitely complete if it has all finite limits.
+    That is, for any diagram $D$ of shape $\mathcal{D}$ in $\mathcal{C}$,
+    the category of cones over $D$ has a terminal object.
+    The following are equivalent:
+    \begin{itemize}
+        \item $\mathcal{C}$ is finitely complete
+        \item $\mathcal{C}$ has a terminal object and all pullbacks
+        \item $\mathcal{C}$ has all finite products and equalizers
+    \end{itemize}
+\end{theorem}
+
+Notice that the morphisms in the category of Heyting algebras
+$\mathbf{Heyt}$ are a unique type of functor that preserves 
+the products and exponential objects.
+This seems to be an important property that a functor can have.
+\begin{definition}[(Co)Limit preserving functors]
+    Given two categories $\mathcal{C}$ and $\mathcal{D}$,
+    and a (co)limiting cone $(A,\eta)$ over a diagram $D$ of shape 
+    $\mathcal{D}$ in $\mathcal{C}$,
+    a functor $F:\mathcal{C}\to\mathcal{D}$ 
+    presrves the (co)limit $(A,\eta)$ if 
+    the cone $(F(A),F(\eta)=\{F\eta_X\}_{X\in\mathcal{D}_0})$ 
+    is a (co)limiting cone over the diagram $F\circ D$.
+    
+    We say $F$ preserves (co)limits of shape $\mathcal{D}$ 
+    if it preserves all (co)limits over diagrams of 
+    shape $\mathcal{D}$.
+
+    We say $F$ preserves (co)limits if it 
+    preserves all (co)limits.
+    
+\end{definition}
+
+\begin{example}
+    We say that $F$ preserves products if it preserves limits of shape $\mathcal{2}$.
+    That is, if $F(A\times B)\cong F(A)\times F(B)$ for any two objects $A,B\in\mathcal{C}_0$.
+\end{example}
+
+\subsection{Adjunctions}
+In the case of equivalence of categories, we had a pair of functors
+$F:\mathcal{C}\to\mathcal{D}$ and $G:\mathcal{D}\to\mathcal{C}$
+such that for any $A\in\mathcal{C}_0$
+we had an isomorphic map $\eta_A:A\to G A$
+such that
+for any $B\in\mathcal{D}_0$
+and morphism $f:A\to GB$,
+there exists a unique morphism from $FGA$ to $GB$:
+\[\begin{tikzcd}
+	A && GB \\
+	\\
+	GFA && GFGB
+	\arrow["f"{description}, from=1-1, to=1-3]
+	\arrow["{\eta_A}"{description}, from=1-1, to=3-1]
+	\arrow["GFf"{description}, from=3-1, to=3-3]
+	\arrow["{G(\eta_B)}"{description}, from=3-3, to=1-3]
+\end{tikzcd}\]
+
+And conversely, for any $f:GB\to A$ in $\mathcal{C}$,
+there exists a unique morphism from $B$ to $F(A)$:
+\[\begin{tikzcd}
+    {GB} && A \\
+    \\
+    {GFGB} && {GFA}
+    \arrow["f"{description}, from=1-1, to=1-3]
+    \arrow["{G(\eta_B)}"{description}, from=1-1, to=3-1]
+    \arrow["GFf"{description}, from=3-1, to=3-3]
+    \arrow["{\eta_A}"{description}, from=3-3, to=1-3]
+\end{tikzcd}\]
+
+Whenever the natural transformation $\eta$ is an isomorphism (that is whenever $A\cong GF A$ for any $A$)
+we have both of these commuting diagrams.
+We can weaken equivalence by requiring only one of these commuting diagrams to hold.
+However, it turns out that by requiring only one of these commuting diagrams to hold 
+in category $\mathcal{C}$,
+we can prove that the other commuting diagram holds in the category $\mathcal{D}$.
+
+\begin{definition}[Adjoint Functors]
+    Given two categories $\mathcal{C}$ and $\mathcal{D}$,
+    two functors $L:\mathcal{C}\to\mathcal{D}$ and $R:\mathcal{D}\to\mathcal{C}$
+    are called adjoint with $L$ left adjoint to $R$ and $R$ right adjoint to $L$
+    if there exists natural transformations $\eta:\mathbf{1}_{\mathcal{C}}\to RL$
+    and $\epsilon:LR\to \mathbf{1}_{\mathcal{D}}$. That is, for any $A\in\mathcal{D}_0$,
+    $B\in\mathcal{C}_0$ and map $f:LB\to A$,
+    there exists a unique map $\tilde{f}:B\to RA$ such that
+    the following diagram commutes:
+    \[\begin{tikzcd}
+        LB \\
+        \\
+        LRA && A
+        \arrow["{L\tilde{f}}"{description}, from=1-1, to=3-1]
+        \arrow["{\epsilon_A}"{description}, from=3-1, to=3-3]
+        \arrow["f"{description}, from=1-1, to=3-3]
+    \end{tikzcd}\]
+
+    And conversely, for any $A\in\mathcal{C}_0$
+    and $B\in\mathcal{D}_0$ and map $g:A\to RB$,
+    \[\begin{tikzcd}
+        A && RLA \\
+        \\
+        && RB
+        \arrow["{\eta_A}"{description}, from=1-1, to=1-3]
+        \arrow["{R\tilde{g}}"{description}, from=1-3, to=3-3]
+        \arrow["g"{description}, from=1-1, to=3-3]
+    \end{tikzcd}\]
+
+    We say that $\eta$ is the unit of the adjunction and $\epsilon$ is 
+    the counit of the adjunction.
+
+    We denote the adjunction by $L\dashv R$.
+\end{definition}
+Using the arrows, we can think of the left and right adjoint as the representatives of
+the objects of the other category in the first category that is most optimal in the sense
+that whenever we have a map from the representative to (from) an object of the first category,
+we can extend it to a map from the representative to the object of the second category.
+
+This reveals a very important property of adjunctions:
+\begin{theorem}[Adjunctions preserve limits and colimits]
+    Left adjoints preserve colimits and right adjoints preserve limits.
+\end{theorem}
+
+Another method of defining adjunctions is through the hom-set:
+
+\begin{theorem}[Definition of Adjunction]
+    Given functors $L:\mathcal{C}\to\mathcal{D}$ and $R:\mathcal{D}\to\mathcal{C}$,
+    the following are equivalent:
+    \begin{enumerate}
+        \item $L\dashv R$
+        \item For any $A\in\mathcal{C}_0$ and $B\in\mathcal{D}_0$,
+        there exists a bijection
+        \[
+            \mathcal{D}(LA,B)\cong \mathcal{C}(A,RB)
+        \]
+    \end{enumerate}
+\end{theorem}
+
+The section definition of adjunction would prove to be very useful for actually
+proving that two functors are adjoint while the first definition is useful
+for proving properties of adjunctions.
+
+Adjunctions would prove to be very useful in the next and last section
+where we discuss first order logic.
+
+\section{First Order Logic and Hyperdoctrines}
+We finish this appendix by showing how to construct first order logic using hyperdoctrines.
+As stated before, first order logic consists of formulas in contexts.
+Let us assume that we have a fixed signature $\Sigma$ of role, constants and function symbols.
+Given a context $\Gamma$, the set of formulas defined over the variables in $\Gamma$
+is closed under conjunction, disjunction, implication and negation;
+e.g. $(\Gamma\mid\varphi)$ and $(\Gamma\mid\psi)$ yield $(\Gamma\mid\varphi\wedge\psi)$.
+The relation $\varphi(x_1,\dots,x_n)\vdash_{x_1:X_1,\dots,x_n:X_n}\psi(x_1,\dots,x_n)$
+should be understood as 'if $\varphi$ holds for a given $x_1,\dots,x_n$ 
+then $\psi$ holds for $x_1,\dots,x_n$'.
+Thus, for each context $\Gamma$,
+we can assign a Heyting algebra $P\Gamma$.
+
+Given two contexts $\Gamma$ and $\Gamma,x:X$,
+we can consider a map $P\pi:P\Gamma\to P(\Gamma,x:X)$
+that maps each formula $(\Gamma\mid \varphi)$ to $(\Gamma,x:X\mid \varphi)$.
+This map respects the structure of the Heyting algebra and 
+correspondes dually to a projection of the
+product of contexts:
+$\pi:\Gamma,x:X\to\Gamma$
+that forgets the variable $x$.
+
+In general, any substitution of variables $f:\vec{x}\to\vec{y}$
+corresponds to a map  
+\begin{align*}
+    Pf:P\vec{y}&\to P\vec{x}
+    \\
+    (y_1,\dots,y_n\mid \varphi(y_1,\dots,y_n))&\mapsto 
+    (x_1,\dots,x_n\mid \varphi(f(x_1),\dots,f(x_n)))
+\end{align*}
+This map also respects composition,
+thus we have a functor $P:\mathbf{Ctx}^{op}\to\mathbf{Heyt}$
+where $\mathbf{Ctx}$ is the category of contexts and substitutions.
+
+This setting can also give us an interpretation of the quantifiers.
+Given a projection $\pi:\Gamma,x:X\to\Gamma$
+and two formulas $\varphi$ in $\Gamma,x:X$
+and $\psi$ in $\Gamma$, then we have that
+$\varphi\vdash_{\Gamma,x:X}\psi$,
+if and only if $\exists x:X.\varphi\vdash_{\Gamma}\psi$.
+\begin{proof}
+    Let $\Gamma:=x_1:X_1,\dots,x_n:X_n$.
+    \\
+    $\Rightarrow$ Assume that $\varphi\vdash_{\Gamma,x:X}\psi$,
+    then for some assignment $a_1:X_1,\dots,a_n:X_n,a:X$,
+    we have that $\varphi(a_1,\dots,a_n,a)\vdash \psi(a_1,\dots,a_n,a)$.
+    As $\pi$ is a projection, we have that
+    $\psi(a_1,\dots,a_n,a)=\psi(a_1,\dots,a_n)$.
+    Thus, we have that for any assignment $a_1:X_1,\dots,a_n:X_n$,
+    if there exists an $a:X$ such that $\varphi(a_1,\dots,a_n,a)$ holds,
+    then $\psi(a_1,\dots,a_n)$ holds. Which means that $\exists x:X.\varphi\vdash_{\Gamma}\psi$.
+    \\
+    $\Leftarrow$ Assume that $\exists x:X.\varphi\vdash_{\Gamma}\psi$,
+    then for some assignment $a_1:X_1,\dots,a_n:X_n$,
+    we have that $\exists a:X.\varphi(a_1,\dots,a_n,a)\vdash \psi(a_1,\dots,a_n)$.
+    As $\pi$ is a projection, we have that
+    $\psi(a_1,\dots,a_n,a)=\psi(a_1,\dots,a_n)$.
+    Thus, we have that for any assignment $a_1:X_1,\dots,a_n:X_n,a:X$,
+    if $\varphi(a_1,\dots,a_n,a)$ holds,
+    then $\psi(a_1,\dots,a_n,a)$ holds. Which means that $\varphi\vdash_{\Gamma,x:X}\psi$.
+\end{proof}
+Notice that $\vdash_\Gamma$ is in fact the hom-set operator of $P\Gamma$.
+This suggests that we can view the existential quantifier as a 
+left adjoint $\exists_\pi:P(\Gamma,x:X)\to P\Gamma$
+to the projection functor $P\pi:P\Gamma\to P(\Gamma,x:X)$
+in the $\mathbf{Heyt}_{\leq}$ category.
+Dually, we can observe that for any formula $\psi$ in $\Gamma,x:X$
+and $\varphi$ in $\Gamma$, then we have that
+ $\varphi\vdash\forall x:X.\psi$,
+if and only if $\varphi\vdash\psi$.
+Meaning that the universal quantifier can be viewed as a
+right adjoint $\forall_\pi:P(\Gamma,x:X)\to P\Gamma$
+to the projection functor $P\pi:P\Gamma\to P(\Gamma,x:X)$
+We would often denote $P\pi$ as $\pi^{-1}$.
+
+For these conditions to truly represent 
+the existential and universal quantifiers,
+they need to also satisfy further conditions
+that would make them behave correctly under
+substitutions.
+
+\begin{definition}[Frobenius Condition]
+    Given a functor in $\mathbf{Heyt}_{\leq}$, $\pi^{-1}:A\to B$,
+    with a left adjoint $\exists_\pi:B\to A$,
+    we say that $\exists_\pi$ satisfies the Frobenius condition
+    if for any $a\in A$ and $b\in B$,
+    \[
+        \exists_\pi(a\wedge \pi^{-1}(b))\cong\exists_\pi(a)\wedge b
+    \]
+\end{definition}
+
+\begin{definition}[Beck-Chevalley Condition]
+    Given a functor $P:\mathbf{Ctx}^{op}\to\mathbf{Heyt}_{\leq}$,
+    we say that $P$ satisfies the Beck-Chevalley condition
+    if for any pullback diagram
+    \[\begin{tikzcd}
+        {\Gamma\times_{\pi,\sigma}\Delta} && {\Gamma} \\
+        \\
+        {\Gamma\times\Delta} && {\Gamma}
+        \arrow["{\pi'}"{description}, from=1-1, to=1-3]
+        \arrow["{\pi}"{description}, from=3-1, to=3-3]
+        \arrow["{\sigma'}"{description}, from=1-1, to=3-1]
+        \arrow["{\sigma}"{description}, from=1-3, to=3-3]
+    \end{tikzcd}\]
+    where $\pi$ and $\pi'$ are projections,
+    we have that $\exists_{\pi'}\circ P\sigma'\cong P\sigma\circ \exists_\pi$
+    and $\forall_{\pi'}\circ P\sigma'\cong P\sigma\circ \forall_\pi$.
+\end{definition}
+
+Putting these conditions together, we have that
+\begin{definition}[Hyperdoctrine]
+   Given a complete category $\mathbf{Ctxt}$,
+    a hyperdoctrine over $\mathbf{Ctxt}$ is a functor 
+    $P:\mathbf{Ctxt}^{op}\to\mathbf{Heyt}_{\leq}$
+    that satisfies the Beck-Chevalley condition and
+    for any projection $\pi:\Gamma\times\Delta\to\Gamma$,
+    there exists a left and right adjoints $\exists_\pi$ and $\forall_\pi$
+    that satisfy the Frobenius condition
+    and the Beck-Chevalley condition.
+\end{definition}
+
+\section{Subobjects}
+Description logic consists of first order logic with relations.
+We finish this appendix by accounting for relations through category theory.
+We already saw one relation - given two objects $A$ and $B$,
+the product $A\times B$ is a relation between $A$ and $B$.
+In set theory, all other relations are subsets of $A\times B$.
+
+Using arrows, a subset $S\subseteq A\times B$ can be understood as an
+injective map $S\to A\times B$.
+In category theory, monomorphisms and epimorphisms are the analogues of injective and 
+surjective maps respectively.
+\begin{definition}[Monomorphisms and Epimorphisms]
+    Given a category $\mathcal{C}$,
+    an arrow $f:A\to B$ is a monomorphism if for any object $X$ and arrows $g_1:X\to A$
+    and $g_2:X\to A$ such that $f\circ g_1=f\circ g_2$, we have that $g_1=g_2$.
+    An arrow $f:A\to B$ is an epimorphism if for any object $X$ and arrows $g_1:B\to X$
+    and $g_2:B\to X$ such that $g_1\circ f=g_2\circ f$, we have that $g_1=g_2$.
+\end{definition}
+
+Thus we can define a subobject of $A\times B$ as a monomorphism $S\to A\times B$.
